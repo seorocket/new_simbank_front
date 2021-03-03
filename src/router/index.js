@@ -5,6 +5,7 @@ import Sim from '../views/Sim.vue'
 import Simbank from '../views/Simbank.vue'
 import Getsms from '../views/Getsms.vue'
 import Settings from '../views/Settings.vue'
+import SmsCollector from '../views/SmsCollector.vue'
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,14 @@ const routes = [
     text: 'Get SMS',
     show: true,
     component: Getsms
+  },
+  {
+    path: '/sms-collector',
+    name: 'SMS COLLECTOR',
+    icon: 'source',
+    text: 'SMS COLLECTOR',
+    show: true,
+    component: SmsCollector
   },
   {
     path: '/settings',

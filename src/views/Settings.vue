@@ -30,7 +30,11 @@
         q-card-section(class="row items-center")
           span(class="q-ml-sm text-h6") Добавить Сервер
         q-card-section(class="row items-center")
-            span(class="q-ml-sm") Купить типа сервер, услуга будет стоить 500р/м
+            span(class="q-ml-sm") Cервер нужен для установки ПО Sсheduler Server. Эта утилита, позволяющая выполнять централизованное управление оборудованием.
+            span(class="q-ml-sm") С помощью этого программного обеспечения SIMBank и GoIP будут зарегистрированы на сервере SIMBankScheduler. Используя Scheduler Server, можно одновременно управлять несколькими GSM-шлюзами и SIM-банками и управлять работой более чем 10 000 SIM-карт из веб-платформы Simbank.pro 
+            span(class="q-ml-sm") Подробнее о работе Sсheduler Server читайте в FAQ
+            span(class="q-ml-sm") Стоимость аренды сервера  - 500 руб\мес. 
+            span(class="q-ml-sm") *плата за аренду сервера будет списываться с баланса аккаунта
             q-btn(
               flat
               label="Создать"
