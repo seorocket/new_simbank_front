@@ -1,76 +1,86 @@
 <template lang="pug">
-  div
+  div(style="float: left; width: 100%; margin: 20px;")
+    q-input(filled label="Дата от" v-model="filter.start" style="width: 250px; float: left; margin: 15px 0;")
+      template(v-slot:prepend)
+        q-icon(name="event" class="cursor-pointer")
+          q-popup-proxy(transition-show="scale" transition-hide="scale")
+            q-date(v-model="filter.start" mask="YYYY-MM-DD HH:mm")
+              div(class="row items-center justify-end")
+                q-btn(v-close-popup label="Close" color="primary" flat)
+
+      template(v-slot:append)
+        q-icon(name="access_time" class="cursor-pointer")
+          q-popup-proxy(transition-show="scale" transition-hide="scale")
+            q-time(v-model="filter.start" mask="YYYY-MM-DD HH:mm" format24h)
+              div(class="row items-center justify-end")
+                q-btn(v-close-popup label="Close" color="primary" flat)
+
+    q-input(filled label="Дата до" v-model="filter.end" style="width: 250px; float: left; margin: 15px 20px 15px;")
+      template(v-slot:prepend)
+        q-icon(name="event" class="cursor-pointer")
+          q-popup-proxy(transition-show="scale" transition-hide="scale")
+            q-date(v-model="filter.end" mask="YYYY-MM-DD HH:mm")
+              div(class="row items-center justify-end")
+                q-btn(v-close-popup label="Close" color="primary" flat)
+
+      template(v-slot:append)
+        q-icon(name="access_time" class="cursor-pointer")
+          q-popup-proxy(transition-show="scale" transition-hide="scale")
+            q-time(v-model="filter.end" mask="YYYY-MM-DD HH:mm" format24h)
+              div(class="row items-center justify-end")
+                q-btn(v-close-popup label="Close" color="primary" flat)
+
+    q-btn(label="Применить" color="primary" v-on:click="filterByDates()" style="margin: 23px 0 0 10px;")
+
+    //- selection="multiple"
+    //- :selected.sync="selected"
     q-table(
       title="Список cмс"
       :data="data"
       :columns="columns"
-      row-key="name"
-      v-slot:body="props"
-      selection="multiple"
-      :selected.sync="selected"
+      :rows-per-page-options="[25, 50, 100, 0]"
+      style="float: left; width: 100%; padding-right: 20px;"
     )
-        q-tr(:props="props")
-            q-td(key="selected")
-              q-checkbox(dense v-model="props.selected")
-            </q-card-section>
-            q-td(key="slot" :props="props" v-html="props.row.slot")
-            q-td(key="name" :props="props")
-              <img :src="props.row.operator_image" style="position: relative; top: 2px; right: 3px;"> {{ props.row.name }}
-            q-td(key="pk" :props="props")
-                button Посмотреть
-            q-td(key="pay_operation" :props="props")
-                q-icon(
-                  :name="props.row.pay_operation ? 'add_circle' : 'remove_circle'"
-                  :style="'font-size: 30px; color: ' + (props.row.pay_operation ? 'green' : 'red')")
-            q-td(key="last_pay_operation" :props="props") {{ props.row.last_pay_operation }}
-            q-td(key="imei" :props="props") -
-            q-td(key="actions" :props="props")
-                q-btn.q-mr-sm(
-                    size="sm"
-                    color="secondary"
-                    label="Активировать"
-                    v-on:click="popup.activate_sim = true, popup.activate_sim_data.sim = props.row.name, getData('/goip/goip_lines_status/', 'data2')"
-                )
-                q-btn(size="sm" round color="secondary" icon="edit" style="margin-right: 10px;" v-on:click="openEdit('add_sim', props.row)")
 </template>
 
 <script>
 import axios from 'axios'
+import { date } from 'quasar'
 export default {
   data () {
     return {
+      filter: {
+        start: '',
+        end: ''
+      },
       selected: [],
       data: [],
       data2: [],
       columns: [
         {
-          name: 'slot',
-          required: true,
-          label: 'Слот в Sim-Банке',
-          align: 'center',
-          sortable: true
-        },
-        {
-          name: 'name',
+          name: 'sms_sender',
           required: true,
           label: 'Номер',
           align: 'left',
+          field: 'sms_sender',
           sortable: true
         },
         {
-          name: 'last_pay_operation',
+          name: 'datetime',
           required: true,
           label: 'Дата',
           align: 'center',
-          sortable: false
+          field: 'datetime',
+          sortable: true
         },
         {
-          name: 'imei',
+          name: 'content',
           required: true,
-          label: 'IMEI',
+          field: 'content',
+          label: 'Сообщение',
           align: 'center',
           sortable: false
-        },
+        }
       ],
       popup: {
         add_sim: false,
@@ -132,6 +142,9 @@ export default {
         vm.deleteObject(data, url, callback, path)
       })
     },
+    filterByDates () {
+      this.getData('/sim/get_all_sms/', 'data', this.filter)
+    },
     createObject (data, url, url_callback=false, path=false) {
         const vm = this
         let new_data = {}
@@ -157,19 +170,11 @@ export default {
         vm.popup['edit_' + popup.split('_')[1]] = true
         vm.popup[popup + '_data'] = item
     },
-    getData (url, path) {
+    getData (url, path, data={}) {
         const vm = this
-        axios.post(url).then(response => {
-          if (url === '/goip/goip_lines_status/') {
-            vm[path] = response.data.map(function (i) {
-              return {'value': i.line_id, 'label': i.phone_number ? `${i.line_id} (${i.phone_number})` : i.line_id}
-            })
-          } else {
-            vm[path] = response.data
-          }
-          if (url === '/simbank/' || url === '/operator/') {
-            vm.settings[path] = response.data.map(function(i){ return {'label': i.name, 'value': i.pk}})
-          }
+        axios.post(url, data).then(response => {
+            vm[path] = response.data.message
+
         })
     },
     showNotify (position, message, color) {
@@ -183,7 +188,9 @@ export default {
     }
   },
   beforeMount () {
-    this.getData('/sim/get_all_sms/', 'data')
+    const f_start = new Date().setDate(new Date().getDate() -1 )
+    const f_end = new Date()
+    this.getData('/sim/get_all_sms/', 'data', {'start': date.formatDate(f_start, 'YYYY-MM-DD HH:mm:ss'), 'end': date.formatDate(f_end, 'YYYY-MM-DD') + ' 23:59:59'})
   }
 }
 </script>
