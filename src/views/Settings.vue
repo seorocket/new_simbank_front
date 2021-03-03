@@ -13,13 +13,11 @@
       thead
         tr
           th Имя сервера
-          th Логин
           th Адрес 
           th Действие
       tbody
         tr(v-for="s in shedulers")
           td {{ s.name }}
-          td {{ s.login }}
           td {{ s.path }}
           td
             q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbit(`/simbank_scheduler/${s.pk}/`, '/simbank_scheduler/', 'shedulers')")
@@ -189,7 +187,6 @@
           th Имя GOIP
           th ID GOIP
           th Тип GOIP
-          th Адрес GOIP
           th Логин GOIP
           th Действие
       tbody
@@ -197,7 +194,6 @@
           td {{ g.name }}
           td {{ g.simbankid }}
           td {{ g.type }}
-          td {{ g.path }}
           td {{ g.login }}
           td
             q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbit(`/goip/${g.id}/`, '/goip/get_list/', 'goips')")
@@ -282,15 +278,6 @@
             //-   stack-label
             //-   style="width: 100%; margin-bottom: 10px"
             //- )
-            q-input(
-              v-model="popup.add_goip_data.path_sms"
-              label="SMS сервер"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
             q-btn(
               flat
               label="Создать"
