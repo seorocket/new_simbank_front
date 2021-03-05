@@ -12,7 +12,8 @@ export default new Vuex.Store({
     token: undefined,
     states: {
       servers: [],
-      smbs: []
+      smbs: [],
+      goips: []
     }
   },
   mutations: {
