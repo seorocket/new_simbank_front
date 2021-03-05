@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(style="float: left; width: 100%; margin: 20px;")
+  div(style="float: left; width: calc(100% - 40px); margin: 20px;")
     q-input(filled label="Дата от" v-model="filter.start" style="width: 250px; float: left; margin: 15px 0;")
       template(v-slot:prepend)
         q-icon(name="event" class="cursor-pointer")

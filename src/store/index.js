@@ -7,15 +7,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    miniStateDrawer: false,
+    miniStateDrawerL: false,
+    miniStateDrawerR: true,
     token: undefined,
+    states: {
+      servers: [],
+      smbs: []
+    }
   },
   mutations: {
-    turnLeftDrawer (state) {
-      state.miniStateDrawer = !state.miniStateDrawer
+    turnLeftDrawer (state, item) {
+      state[item] = !state[item]
     },
     authorize (state, data) {
       state.token = data
+    },
+    setStates (state, data) {
+      state.states = {...state.states, ...data} 
     }
   },
   actions: {
