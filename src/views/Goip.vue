@@ -152,8 +152,13 @@
               flat
               label="Продолжить"
               color="primary"
+              type="submit"
+              :loading="submitting"
               v-on:click="sendUSSD()"
               )
+              template(v-slot:loading)
+                q-spinner-facebook
+
             q-btn(
               flat
               label="Отмена"
@@ -171,6 +176,7 @@ export default {
   },
   data () {
     return {
+      submitting: false,
       popup: {
         sendUSSD: false,
         sendUSSD_data: {
@@ -222,9 +228,22 @@ export default {
     },
     sendUSSD () {
       const vm = this
-      axios.post('/goip/send_ussd/', {'goip_id': vm.popup.sendUSSD_data.line_id, 'msg': vm.popup.sendUSSD_data.command}).then(response => {
-        console.log(response.data)
-        vm.popup.sendUSSD = false
+      if (!vm.submitting) {
+        vm.submitting = true
+        axios.post('/goip/send_ussd/', {'goip_id': vm.popup.sendUSSD_data.line_id, 'msg': vm.popup.sendUSSD_data.command}).then(response => {
+          vm.showNotify('top-right', response.data, 'positive')
+          vm.popup.sendUSSD = false
+          vm.submitting = false
+        })
+      }
+    },
+    showNotify (position, message, color) {
+      this.$q.notify({
+        color: color, 
+        textColor: 'white', 
+        message: message, 
+        position: position,
+        timeout: 3000
       })
     }
   },

@@ -97,8 +97,8 @@
               q-item-label(caption) Вопрос-Ответ
 
       q-drawer(show-if-above :mini="miniStateDrawerR" side="right" bordered)
-        //- q-toolbar
-        //-   q-btn(dense flat round icon="menu" @click="$store.commit('turnLeftDrawer', 'miniStateDrawerR')")
+        q-toolbar
+          q-btn(dense flat round icon="refresh" @click="getEquipmentInfo()")
         q-item
           q-item-section(avatar style="width: 70px;")
             img(width="45%" style="display: table; margin: 0 auto;" src="https://www.clipartmax.com/png/full/52-522123_raid-server-icon.png" class="sc-AxmLO gmtmqV")
@@ -196,33 +196,36 @@ export default {
         position: position,
         timeout: 3000
       })
-    }
-  },
-  mounted () {
-    if (this.token) {
-      axios.post('http://65.21.51.17:8010/api/simbank_scheduler/check_scheduler/').then(response=>{
-        const data = []
-        for (let key in response.data) {
-          data.push(response.data[key])
-        }
-        this.$store.commit('setStates', {'servers': data})
-      })
+    },
+    getEquipmentInfo() {
+      if (this.token) {
+        this.$store.commit('setStates', {'servers': []})
+        this.$store.commit('setStates', {'smbs': []})
+        this.$store.commit('setStates', {'goips': []})
+        axios.post('http://65.21.51.17:8010/api/simbank_scheduler/check_scheduler/').then(response=>{
+          const data = []
+          for (let key in response.data) {
+            data.push(response.data[key])
+          }
+          this.$store.commit('setStates', {'servers': data})
+        })
 
-      axios.post('http://65.21.51.17:8010/api/simbank/check_sims_simbank_status/').then(response=>{
-        const data = []
-        for (let key in response.data.simabnk) {
-          data.push(response.data.simabnk[key])
-        }
-        this.$store.commit('setStates', {'smbs': data})
-      })
+        axios.post('http://65.21.51.17:8010/api/simbank/check_sims_simbank_status/').then(response=>{
+          const data = []
+          for (let key in response.data.simabnk) {
+            data.push(response.data.simabnk[key])
+          }
+          this.$store.commit('setStates', {'smbs': data})
+        })
 
-      axios.post('http://65.21.51.17:8010/api/goip/check_goip_status/').then(response=>{
-        const data = []
-        for (let key in response.data) {
-          data.push(response.data[key])
-        }
-        this.$store.commit('setStates', {'goips': data})
-      })
+        axios.post('http://65.21.51.17:8010/api/goip/check_goip_status/').then(response=>{
+          const data = []
+          for (let key in response.data) {
+            data.push(response.data[key])
+          }
+          this.$store.commit('setStates', {'goips': data})
+        })
+      }
     }
   }
 }
