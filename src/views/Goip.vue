@@ -28,6 +28,7 @@
           td(v-html=" g.sim_id ? g.sim_id : '-'")
           td {{ g.imei }}
           td
+            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="USSD" style="margin-right: 10px;" @click="popup.sendUSSD = true; popup.sendUSSD_data.line_id = g.line_id")
             q-btn(v-if="g.sim_id" size="xs" color="secondary" label="отключить" style="margin-right: 10px;" @click="removeSIM(g.sim_id)")
 
 
@@ -130,6 +131,35 @@
               color="primary"
               v-on:click="popup.add_goip = false"
               )
+    q-dialog(
+      v-model="popup.sendUSSD"
+      persistent
+      )
+      q-card
+        q-card-section(class="row items-center")
+          span(class="q-ml-sm text-h6") Отправить USSD команду
+        q-card-section(class="row items-center")
+            q-input(
+              v-model="popup.sendUSSD_data.command"
+              label="USSD команда"
+              type="text"
+              lazy-rules
+              outlined
+              stack-label
+              style="width: 100%; margin-bottom: 10px"
+            )
+            q-btn(
+              flat
+              label="Продолжить"
+              color="primary"
+              v-on:click="sendUSSD()"
+              )
+            q-btn(
+              flat
+              label="Отмена"
+              color="primary"
+              v-on:click="popup.sendUSSD = false"
+              )
 </template>
 
 <script>
@@ -142,6 +172,11 @@ export default {
   data () {
     return {
       popup: {
+        sendUSSD: false,
+        sendUSSD_data: {
+          line_id: '',
+          command: ''
+        },
         add_goip: false,
         add_goip_data: {
           name: '',
@@ -172,8 +207,8 @@ export default {
   methods: {
     getPageInfo () {
       const vm = this
-      axios.get('/goip/goip_lines_status/').then(response => {
-        vm.goip_lines = response.data
+      axios.get('/goip/').then(response => {
+        vm.goip_lines = response.data.message
       })
     },
     removeSIM (sim) {
@@ -184,6 +219,13 @@ export default {
             vm.showNotify('top-right', 'Сим-карта успешно извлечена!', 'positive')
           }
         })
+    },
+    sendUSSD () {
+      const vm = this
+      axios.post('/goip/send_ussd/', {'goip_id': vm.popup.sendUSSD_data.line_id, 'msg': vm.popup.sendUSSD_data.command}).then(response => {
+        console.log(response.data)
+        vm.popup.sendUSSD = false
+      })
     }
   },
   beforeMount () {
