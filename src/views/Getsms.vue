@@ -7,7 +7,7 @@
             q-list(padding)
                 q-item(clickable v-on:click="createTask(true)")
                     q-item-label По Сервису
-                q-item(clickable v-on:click="createTask()")
+                q-item(clickable v-on:click="popup.get_sim = true")
                     q-item-label По номеру
         div.services
             span Все
@@ -42,13 +42,13 @@
                           size="sm"
                           color="secondary"
                           label="СМС отправлено"
-                          v-on:click="sendPost('https://simbank.pro/api/task/set_sms_sent_status/', {'hash': t.hash})"
+                          v-on:click="sendPost('task/set_sms_sent_status/', {'hash': t.hash})"
                           )
                         q-btn.q-mr-sm(
                           size="sm"
                           color="red"
                           label="Номер использован"
-                          v-on:click="sendPost('https://simbank.pro/api/task/set_phone_used_status/', {'hash': t.hash})"
+                          v-on:click="sendPost('task/set_phone_used_status/', {'hash': t.hash})"
                           )
                       template(v-if="t.status == 3 && !t.sms_data.length") Ожидание смс
                       template(v-if="t.status == 3 && t.sms_data.length")
@@ -61,7 +61,7 @@
                           size="sm"
                           color="secondary"
                           label="Завершить сессию"
-                          v-on:click="sendPost('https://simbank.pro/api/task/set_phone_used_status/', {'hash': t.hash})"
+                          v-on:click="sendPost('task/set_phone_used_status/', {'hash': t.hash})"
                           style="float: left;"
                           )
                     td 
@@ -70,8 +70,46 @@
                           round 
                           color="deep-orange" 
                           icon="delete"
-                          v-on:click="sendPost('https://simbank.pro/api/task/task_delete/', {'task_pk': t.hash})")
-    
+                          v-on:click="sendPost('task/task_delete/', {'task_pk': t.hash})")
+    q-dialog(
+      v-model="popup.get_sim"
+      persistent
+      )
+      q-card
+        q-card-section(class="row items-center")
+          span(class="q-ml-sm text-h6") Добавить SIM
+        q-card-section(class="row items-center")
+            q-select(
+                filled
+                v-model="task_data.phone"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
+                label="Sim"
+                :options="options"
+                @filter="(val, update, abort) => filterFn(val, update, abort, 'sim')"
+                @filter-abort="abortFilterFn"
+                style="width: 250px"
+                hint="Например: +79999999999"
+                :clearable="true")
+
+                template(v-slot:no-option)
+                  q-item
+                    q-item-section.text-grey Нет данных
+            q-btn(
+              flat
+              label="Создать"
+              color="primary"
+              v-if="popup.get_sim"
+              v-on:click="createTask(false)"
+              )
+            q-btn(
+              flat
+              label="Отмена"
+              color="primary"
+              v-on:click="popup.get_sim = popup.edit_sim = false"
+              )    
 </template>
 
 <script>
@@ -85,14 +123,31 @@ export default {
       tasks: {
         "message": []
       },
+      sim_used: {
+          sim: ''
+       },
       settings: {
         service: [{"pk":1,"name":"yahoo.com","url":"yahoo.com","comment":null},{"pk":2,"name":"gmail.com","url":"mail.google.com","comment":null},{"pk":4,"name":"mail.ru","url":"mail.ru","comment":null}]
       },
       task_data: {
         lifetime: 20,
         without_service: true,
-        phone_id: ''
-      }
+        phone: ''
+      },
+      options: [],
+      popup: {
+        get_sim: false,
+        get_sim_data: {
+          bank: "",
+          name: "",
+          operator: "",
+          pay_operation: {'label': 'Нет', 'value': 0},
+          services_id: [],
+          sim_id: null,
+          slot: "",
+          status: {'label': 'Работает', 'value': 1}
+        }
+      },
     }
   },
   methods: {
@@ -114,13 +169,13 @@ export default {
         }
 
         if ([1,2].indexOf(vm.tasks.message[i].status) > -1) {
-          axios.post('https://simbank.pro/api/task/get_status/', {'task': vm.tasks.message[i].hash}).then(response => {
+          axios.post('task/get_status/', {'task': vm.tasks.message[i].hash}).then(response => {
             if (response.data.message != 1) {
               vm.tasks.message[i].status = response.data.message
             }
           })
         } else if (vm.tasks.message[i].status == 3) {
-          axios.get('https://simbank.pro/api/goip/get_sms/?hash=' + vm.tasks.message[i].hash).then(response => {
+          axios.get('goip/get_sms/?hash=' + vm.tasks.message[i].hash).then(response => {
             if (response.data.message == 'waiting') {
               vm.tasks.message[i].sms_data = []
             } else {
@@ -130,12 +185,25 @@ export default {
         }
       }
     },
+    filterFn (val, update, abort, url) {
+        const vm = this       
+        update(() => {
+            const needle = val.toLowerCase()
+             axios.get(url +'/?get_extended=1&sim=' + needle).then(response => {
+              vm.options = response.data.map(function(i){return{label: i.name, value: i.name }})
+            })  
+        })      
+    },
     createTask (choose=false) {
       const vm = this
-      const url = 'https://simbank.pro/api/task/'
+      const url = 'task/'
+      vm.task_data.phone = vm.task_data.phone.value
       if (!choose) {
         axios.post(url, vm.task_data).then(response => {
-          vm.tasks.message.push(response.data.message)
+          axios.post('sim/check_goip_slot_sim/', {'task': response.data.message.hash}).then(response => {
+          
+           vm.tasks.message.push(response.data.message)
+          })
         })
       }
     },
