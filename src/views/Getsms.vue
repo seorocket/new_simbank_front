@@ -11,7 +11,7 @@
                     q-item-label По номеру
         div.services
             span Все
-            div.service(v-for="s in settings.service")
+            div.service(v-for="s in settings.service" clickable v-on:click="updateTaskService(s.pk)" v-bind:class="{ 'active': active_state === s.pk }")
                 img(:src="'http://favicon.yandex.net/favicon/' + s.name" style="position: relative; top: 3px; margin-right: 5px;")
                 span {{ s.name }}
       div.col-md-10
@@ -134,6 +134,11 @@ export default {
         without_service: true,
         phone: ''
       },
+      task_service: {
+        without_service: false,
+        service_id: '1'
+      },
+      active_state : '1',
       options: [],
       popup: {
         get_sim: false,
@@ -194,6 +199,11 @@ export default {
             })  
         })      
     },
+    updateTaskService(service_id){
+	const vm = this
+        vm.task_service.service_id = service_id
+        vm.active_state = service_id
+    },
     createTask (choose=false) {
       const vm = this
       const url = 'task/'
@@ -201,11 +211,19 @@ export default {
       if (!choose) {
         axios.post(url, vm.task_data).then(response => {
           axios.post('sim/check_goip_slot_sim/', {'task': response.data.message.hash}).then(response => {
-          
            vm.tasks.message.push(response.data.message)
+           vm.getData('/task/', 'tasks')
+          })
+        })
+      }else{
+        axios.post(url, vm.task_service).then(response => {
+          axios.post('sim/check_goip_slot_sim/', {'task': response.data.message.hash}).then(response => {
+           vm.tasks.message.push(response.data.message)
+           vm.getData('/task/', 'tasks')
           })
         })
       }
+     
     },
     getData (url, path) {
         const vm = this
@@ -295,5 +313,8 @@ export default {
     border-radius: 50%;
     background: red;
     display: inline-block;
+  }
+  .service.active {
+    border: 1px solid green;
   }
 </style>
