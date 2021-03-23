@@ -6,6 +6,8 @@ import Simbank from '../views/Simbank.vue'
 import Getsms from '../views/Getsms.vue'
 import Settings from '../views/Settings.vue'
 import SmsCollector from '../views/SmsCollector.vue'
+import GetApi from '../views/GetApi.vue'
+import GetFaq from '../views/GetFaq.vue'
 
 Vue.use(VueRouter)
 
@@ -41,6 +43,22 @@ const routes = [
     text: 'Get SMS',
     show: true,
     component: Getsms
+  },
+  {
+    path: '/get-api',
+    name: 'Get API',
+    icon: 'source',
+    text: 'Get API',
+    show: true,
+    component: GetApi
+  },
+  {
+    path: '/get-faq',
+    name: 'Get FAQ',
+    icon: 'source',
+    text: 'Get FAQ',
+    show: true,
+    component: GetFaq
   },
   {
     path: '/sms-collector',

@@ -331,9 +331,9 @@ export default {
         const vm = this
         axios.get(url).then(response => {
           if (url === '/goip/goip_lines_status/') {
-            vm[path] = response.data.map(function (i) {
-              return {'value': i.line_id, 'label': i.phone_number ? `${i.line_id} (${i.phone_number})` : i.line_id}
-            })
+            //vm[path] = response.data.map(function (i) {
+              //return {'value': i.line_id, 'label': i.phone_number ? `${i.line_id} (${i.phone_number})` : i.line_id}
+            //})
           } else {
             vm[path] = response.data
           }
@@ -354,7 +354,7 @@ export default {
   },
   beforeMount () {
     this.getData('/sim/', 'data')
-    this.getData('/goip/goip_lines_status/', 'data2')
+    //this.getData('/goip/goip_lines_status/', 'data2')
     this.getData('/simbank/', 'simbanks')
     this.getData('/operator/', 'operators')
   }

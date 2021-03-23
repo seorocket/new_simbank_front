@@ -223,7 +223,7 @@ export default {
           })
         })
       }
-     
+      vm.popup.get_sim = vm.popup.edit_sim = false 
     },
     getData (url, path) {
         const vm = this
