@@ -82,5 +82,12 @@ const router = new VueRouter({
   mode: 'history',
   routes
 })
-
+router.beforeEach((to, from, next) => {
+   if(to.name != 'Get SMS'){
+     clearInterval(window.timeout);
+     console.log(window.timeout);
+     console.log(from);
+   }
+   next()
+})
 export default router

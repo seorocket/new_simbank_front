@@ -210,10 +210,12 @@ export default {
       vm.task_data.phone = vm.task_data.phone.value
       if (!choose) {
         axios.post(url, vm.task_data).then(response => {
-          axios.post('sim/check_goip_slot_sim/', {'task': response.data.message.hash}).then(response => {
-           vm.tasks.message.push(response.data.message)
-           vm.getData('/task/', 'tasks')
-          })
+          if( response.data.message.hash){
+            axios.post('sim/check_goip_slot_sim/', {'task': response.data.message.hash}).then(response => {
+              vm.tasks.message.push(response.data.message)
+              vm.getData('/task/', 'tasks')
+            })
+          }
         })
       }else{
         axios.post(url, vm.task_service).then(response => {
@@ -236,9 +238,12 @@ export default {
   beforeMount () {
     const vm = this
     this.getData('/task/', 'tasks')
-    window.timeout = setInterval(() =>            
+     axios.get('sim/?get_extended=1&sim=').then(response => {
+        vm.options = response.data.map(function(i){return{label: i.name, value: i.name }})
+      })
+     window.timeout = setInterval(() =>
       vm.updateTasks()
-    , 5000)
+    , 5000)	
   }
 }
 </script>
