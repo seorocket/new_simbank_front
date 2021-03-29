@@ -37,7 +37,7 @@
                     size="sm"
                     color="secondary"
                     label="Активировать"
-                    v-on:click="popup.activate_sim = true, popup.activate_sim_data.sim = props.row.name, getData('/goip/goip_lines_status/', 'data2')"
+                    v-on:click="popup.activate_sim = true, popup.activate_sim_data.sim = props.row.name, getData('/goip/', 'data2')"
                 )
                 q-btn(size="sm" round color="secondary" icon="edit" style="margin-right: 10px;" v-on:click="openEdit('add_sim', props.row)")
                 q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbit(`/sim/${props.row.pk}/`, '/sim/', 'data')")
@@ -330,10 +330,10 @@ export default {
     getData (url, path) {
         const vm = this
         axios.get(url).then(response => {
-          if (url === '/goip/goip_lines_status/') {
-            //vm[path] = response.data.map(function (i) {
-              //return {'value': i.line_id, 'label': i.phone_number ? `${i.line_id} (${i.phone_number})` : i.line_id}
-            //})
+          if (url === '/goip/') {
+            axios.get(url).then(response => {
+              vm.data2 = response.data.message.map(function(i){return{label: i.line_id +' ' + i.phone_number, value: i.line_id}})
+            })
           } else {
             vm[path] = response.data
           }

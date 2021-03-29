@@ -66,6 +66,14 @@ export default {
           sortable: true
         },
         {
+          name: 'phone',
+          required: true,
+          label: 'Используемый номер',
+          align: 'left',
+          field: 'phone',
+          sortable: true
+        },
+        {
           name: 'datetime',
           required: true,
           label: 'Дата',

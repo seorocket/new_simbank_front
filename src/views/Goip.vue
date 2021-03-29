@@ -28,6 +28,7 @@
           td(v-html=" g.sim_id ? g.sim_id : '-'")
           td {{ g.imei }}
           td
+            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="Отправить СМС" style="margin-right: 10px;" @click="popup.sendSms = true; popup.sendSms_data.line_id = g.line_id")
             q-btn(v-if="g.sim_id" size="xs" color="secondary" label="USSD" style="margin-right: 10px;" @click="popup.sendUSSD = true; popup.sendUSSD_data.line_id = g.line_id")
             q-btn(v-if="g.sim_id" size="xs" color="secondary" label="отключить" style="margin-right: 10px;" @click="removeSIM(g.sim_id)")
 
@@ -165,6 +166,50 @@
               color="primary"
               v-on:click="popup.sendUSSD = false"
               )
+    q-dialog(
+      v-model="popup.sendSms"
+      persistent
+      )
+      q-card
+        q-card-section(class="row items-center")
+          span(class="q-ml-sm text-h6") Отправить SMS
+        q-card-section(class="row items-center")
+            q-input(
+              v-model="popup.sendSms_data.phone"
+              label="На какой номер отправить?"
+              type="text"
+              lazy-rules
+              outlined
+              stack-label
+              style="width: 100%; margin-bottom: 10px"
+            )
+            q-input(
+              v-model="popup.sendSms_data.command"
+              label="SMS сообщение"
+              type="text"
+              lazy-rules
+              outlined
+              stack-label
+              style="width: 100%; margin-bottom: 10px"
+            )
+            q-btn(
+              flat
+              label="Продолжить"
+              color="primary"
+              type="submit"
+              :loading="submitting"
+              v-on:click="sendSms()"
+              )
+              template(v-slot:loading)
+                q-spinner-facebook
+
+            q-btn(
+              flat
+              label="Отмена"
+              color="primary"
+              v-on:click="popup.sendSms = false"
+              )
+
 </template>
 
 <script>
@@ -182,6 +227,12 @@ export default {
         sendUSSD_data: {
           line_id: '',
           command: ''
+        },
+        sendSms: false,
+        sendSms_data: {
+          line_id: '',
+          command: '',
+          phone: ''
         },
         add_goip: false,
         add_goip_data: {
@@ -233,6 +284,17 @@ export default {
         axios.post('/goip/send_ussd/', {'goip_id': vm.popup.sendUSSD_data.line_id, 'msg': vm.popup.sendUSSD_data.command}).then(response => {
           vm.showNotify('top-right', response.data, 'positive')
           vm.popup.sendUSSD = false
+          vm.submitting = false
+        })
+      }
+    },
+    sendSms () {
+      const vm = this
+      if (!vm.submitting) {
+        vm.submitting = true
+        axios.post('/goip/send_sms/', {'phone': vm.popup.sendSms_data.phone, 'goip_id': vm.popup.sendSms_data.line_id, 'msg': vm.popup.sendSms_data.command}).then(response => {
+          vm.showNotify('top-right', response.data.message, 'positive')
+          vm.popup.sendSms = false
           vm.submitting = false
         })
       }

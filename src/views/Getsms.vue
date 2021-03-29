@@ -79,6 +79,13 @@
         q-card-section(class="row items-center")
           span(class="q-ml-sm text-h6") Добавить SIM
         q-card-section(class="row items-center")
+            q-input(
+              label="Фильтр по Sim"
+              :value="text" 
+              hint="Например: +79999999999"
+              style="width: 250px"
+              @input="(val) => { filterFn(val,'sim'); }")
+        q-card-section(class="row items-center")     
             q-select(
                 filled
                 v-model="task_data.phone"
@@ -88,15 +95,13 @@
                 input-debounce="0"
                 label="Sim"
                 :options="options"
-                @filter="(val, update, abort) => filterFn(val, update, abort, 'sim')"
-                @filter-abort="abortFilterFn"
                 style="width: 250px"
-                hint="Например: +79999999999"
                 :clearable="true")
 
                 template(v-slot:no-option)
                   q-item
                     q-item-section.text-grey Нет данных
+        q-card-section(class="row items-center")
             q-btn(
               flat
               label="Создать"
@@ -190,13 +195,12 @@ export default {
         }
       }
     },
-    filterFn (val, update, abort, url) {
+    filterFn (val, url) {
         const vm = this       
-        update(() => {
-            const needle = val.toLowerCase()
-             axios.get(url +'/?get_extended=1&sim=' + needle).then(response => {
-              vm.options = response.data.map(function(i){return{label: i.name, value: i.name }})
-            })  
+        const needle = val
+        vm.text = val
+        axios.get(url +'/?get_extended=1&sim=' + needle).then(response => {
+          vm.options = response.data.map(function(i){return{label: i.name, value: i.name }})
         })      
     },
     updateTaskService(service_id){
