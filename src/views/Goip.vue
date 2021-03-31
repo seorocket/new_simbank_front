@@ -311,6 +311,9 @@ export default {
   },
   beforeMount () {
     this.getPageInfo()
+   window.timeout = setInterval(() =>
+      this.getPageInfo()
+    , 10000)
   }
 }
 </script>

@@ -177,19 +177,18 @@ export default {
         if (date.getDateDiff(curr_date, new Date(), 'minutes')) {
             vm.tasks.message[i]['time_left'] = date.getDateDiff(curr_date, new Date(), 'minutes')
         }
-
-        if ([1,2].indexOf(vm.tasks.message[i].status) > -1) {
+        if ([1,2].indexOf(vm.tasks.message[i].status) > -1) { 
           axios.post('task/get_status/', {'task': vm.tasks.message[i].hash}).then(response => {
             if (response.data.message != 1) {
               vm.tasks.message[i].status = response.data.message
             }
           })
-        } else if (vm.tasks.message[i].status == 3) {
+        } else if (vm.tasks.message[i].status == 3) { 
           axios.get('goip/get_sms/?hash=' + vm.tasks.message[i].hash).then(response => {
             if (response.data.message == 'waiting') {
               vm.tasks.message[i].sms_data = []
             } else {
-              vm.tasks.message[i].sms_data = response.data.message.sms
+              vm.tasks.message[i].sms_data = JSON.parse(response.data.message)
             }
           })
         }

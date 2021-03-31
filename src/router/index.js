@@ -83,10 +83,8 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-   if(to.name != 'Get SMS'){
+   if(to.name != 'Get SMS' || to.name != 'Main'){
      clearInterval(window.timeout);
-     console.log(window.timeout);
-     console.log(from);
    }
    next()
 })
