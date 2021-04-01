@@ -29,6 +29,9 @@
             q-td(key="selected")
               q-checkbox(dense v-model="props.selected")
             </q-card-section>
+            q-td(key="status")
+              div.green_circle(v-if="props.row.status === 1")
+              div.red_circle(v-else)
             q-td(key="slot" :props="props" v-html="props.row.slot")
             q-td(key="name" :props="props")
               <img :src="props.row.operator_image" style="position: relative; top: 2px; right: 3px;"> {{ props.row.name }}
@@ -169,6 +172,13 @@ export default {
       data2: [],
       columns: [
         {
+          name: 'status',
+          required: true,
+          label: 'Статус Sim',
+          align: 'center',
+          sortable: true
+        },
+        {
           name: 'slot',
           required: true,
           label: 'Слот в Sim-Банке',
@@ -303,7 +313,11 @@ export default {
             if ( url_callback && path ) {
                 vm.getData(url_callback, path)
             }
-            vm.showNotify('top-right', 'Настройки добавлены!', 'positive')
+            if(response.data.message == 'Sim offline'){
+              vm.showNotify('top-right', 'Sim offline', 'negative')
+            }else{
+               vm.showNotify('top-right', 'Настройки добавлены!', 'positive')
+            }
           }
         })
     },

@@ -32,8 +32,8 @@
                 tr(v-for="t in tasks.message" v-if="[1,2,3].indexOf(t.status) > -1")
                     td(v-html="`${t.time_left || t.lifetime} мин.`")
                     td 
-                        img(:src="t.phone.operator.image_path" style="position: relative; top: 3px; right: 5px;")
-                        | {{ t.phone.operator.name }} / {{ t.phone.name }}
+                        img(:src="t.phone.operator? t.phone.operator.image_path: none" style="position: relative; top: 3px; right: 5px;")
+                        | {{ t.phone.operator ? t.phone.operator.name : 'Оператор не указан'}}  / {{ t.phone.name }}
                     td 
                       template(v-if="t.status == 1") Номер подготваливается
                       template(v-if="t.status == 2") Используйте номер для активации и нажмите кнопку "смс отправлено".
@@ -247,6 +247,9 @@ export default {
      window.timeout = setInterval(() =>
       vm.updateTasks()
     , 5000)	
+    window.timeout = setInterval(() =>
+      vm.getData('/task/', 'tasks')
+    , 10000)
   }
 }
 </script>
