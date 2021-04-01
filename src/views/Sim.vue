@@ -8,6 +8,14 @@
       no-caps
       v-on:click="popup.add_sim = true")
 
+    q-btn(
+      :ripple="false"
+      color="secondary"
+      style="margin: 15px 0 10px 10px;"
+      label="Пересканировать SIM"
+      no-caps
+      v-on:click="upload_sim()")
+
     q-table(
       title="Список номеров"
       :data="data"
@@ -269,6 +277,15 @@ export default {
       }).onOk(() => {
         vm.deleteObject(data, url, callback, path)
       })
+    },
+    upload_sim(){
+      const vm = this
+      axios.post('/sim/upload_sim/').then(response => {
+         if(response.data.m == true){
+            vm.showNotify('top-right', 'Настройки добавлены!', 'positive')
+            this.getData('/sim/', 'data')
+         }
+      });
     },
     createObject (data, url, url_callback=false, path=false) {
         const vm = this

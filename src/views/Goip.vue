@@ -293,7 +293,11 @@ export default {
       if (!vm.submitting) {
         vm.submitting = true
         axios.post('/goip/send_sms/', {'phone': vm.popup.sendSms_data.phone, 'goip_id': vm.popup.sendSms_data.line_id, 'msg': vm.popup.sendSms_data.command}).then(response => {
-          vm.showNotify('top-right', response.data.message, 'positive')
+          if(response.data.message == 'Сообщение отправлено'){
+             vm.showNotify('top-right', response.data.message, 'positive')
+          }else{
+            vm.showNotify('top-right', response.data.message, 'negative')
+          }
           vm.popup.sendSms = false
           vm.submitting = false
         })

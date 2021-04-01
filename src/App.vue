@@ -1,7 +1,7 @@
 
 <template lang="pug">
   div
-    div(v-if="!token")
+    div(v-if="!token && popup.auth")
       q-dialog(
         v-model="dialog"
         persistent
@@ -11,6 +11,41 @@
             span(class="q-ml-sm text-h6") Авторизация
           q-card-section(class="row items-center")
             form(@submit.prevent="authorization()" method="post" id="login" style="min-width: 400px")
+              q-input(
+                v-model="login.username"
+                label="Логин"
+                type="text"
+                lazy-rules
+                outlined
+                stack-label
+                style="width: 100%; margin-bottom: 10px"
+              )
+              q-input(
+                outlined
+                v-model="login.password"
+                hint=""
+                type="password"
+                label="Пароль"
+                stack-label
+                style="width: 100%"
+              )
+              q-btn(
+                flat
+                label="Войти"
+                color="primary"
+                type="submit"
+                )
+              q-btn(label="Зарегестрироваться" color="primary"  @click="popup.auth = false; popup.register = false")
+    div(v-if="popup.register")
+      q-dialog(
+        v-model="dialog"
+        persistent
+        )
+        q-card
+          q-card-section(class="row items-center")
+            span(class="q-ml-sm text-h6") Регистрация
+          q-card-section(class="row items-center")
+            form(@submit.prevent="registeration()" method="post" id="login" style="min-width: 400px")
               q-input(
                 v-model="login.username"
                 label="Логин"
@@ -157,6 +192,10 @@ export default {
     return {
       left: true,
       dialog: true,
+      popup: {
+         auth: true,
+         registr:false
+      },
       login: {
         username: '',
         password: ''
@@ -192,6 +231,17 @@ export default {
       }).catch(error => {
         console.log(error.detail)
         vm.showNotify('top-right', 'Не верный логин или пароль', 'negative')
+      })
+    },
+    registeration(){
+      const vm = this
+      axios.post('/user/', vm.login).then(response => {
+        axios.defaults.headers.common.Authorization = `Token ${response.data.token}`
+        vm.login = {username: '', password: ''}
+        this.$store.dispatch('authorize', response.data.token)
+      }).catch(error => {
+        console.log(error.detail)
+        vm.showNotify('top-right', 'Произошла ошибка', 'negative')
       })
     },
     logOut () {
