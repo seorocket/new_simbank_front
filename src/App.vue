@@ -35,7 +35,7 @@
                 color="primary"
                 type="submit"
                 )
-              q-btn(label="Зарегестрироваться" color="primary"  @click="popup.auth = false; popup.register = false")
+              q-btn(label="Зарегестрироваться" color="primary"  @click="popup.auth = false; popup.register = true")
     div(v-if="popup.register")
       q-dialog(
         v-model="dialog"
@@ -239,6 +239,8 @@ export default {
         axios.defaults.headers.common.Authorization = `Token ${response.data.token}`
         vm.login = {username: '', password: ''}
         this.$store.dispatch('authorize', response.data.token)
+        vm.popup.register = false
+        vm.popup.auth = true
       }).catch(error => {
         console.log(error.detail)
         vm.showNotify('top-right', 'Произошла ошибка', 'negative')
