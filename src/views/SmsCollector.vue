@@ -85,6 +85,7 @@ export default {
           name: 'content',
           required: true,
           field: 'content',
+          style: 'white-space: pre-wrap;',
           label: 'Сообщение',
           align: 'center',
           sortable: false

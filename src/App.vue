@@ -78,7 +78,7 @@
           q-toolbar-title(style="text-align: center;") {{ $route.name }}
           q-icon(name="power_settings_new" @click="logOut()")
 
-      q-drawer(show-if-above :mini="miniStateDrawerL" side="left" bordered)
+      q-drawer(show-if-above :mini="miniStateDrawerL" side="left" bordered )
         q-list
           q-item-label(header)
             img(src="https://app.simbank.pro/static/media/logo.3a24e86a.svg" style="display: table; margin: 0 auto;")

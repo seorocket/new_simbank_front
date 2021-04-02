@@ -20,7 +20,7 @@
       title="Список номеров"
       :data="data"
       :columns="columns"
-      row-key="name"
+      row-key="slot"
       v-slot:body="props"
       selection="multiple"
       :selected.sync="selected"
@@ -173,56 +173,50 @@ export default {
       columns: [
         {
           name: 'status',
-          required: true,
           label: 'Статус Sim',
           align: 'center',
           sortable: true
         },
         {
           name: 'slot',
-          required: true,
+          field: 'slot',
           label: 'Слот в Sim-Банке',
           align: 'center',
           sortable: true
         },
         {
           name: 'name',
-          required: true,
+          field: 'name',
           label: 'Номер',
           align: 'left',
           sortable: true
         },
         {
           name: 'pk',
-          required: true,
           label: 'Последние входящие СМС',
           align: 'center',
           sortable: false
         },
         {
           name: 'pay_operation',
-          required: true,
           label: 'PAY SERVICE',
           align: 'center',
           sortable: false
         },
         {
           name: 'last_pay_operation',
-          required: true,
           label: 'Дата',
           align: 'center',
           sortable: false
         },
         {
           name: 'imei',
-          required: true,
           label: 'IMEI',
           align: 'center',
           sortable: false
         },
         {
           name: 'actions',
-          required: true,
           label: 'Действие',
           align: 'center',
           sortable: false

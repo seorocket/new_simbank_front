@@ -14,11 +14,13 @@
         tr
           th Имя сервера
           th Адрес 
+          th Дата создания
           th Действие
       tbody
         tr(v-for="s in shedulers")
           td {{ s.name }}
           td {{ s.path }}
+          td {{ s.datetime }}
           td
             q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbit(`/simbank_scheduler/${s.pk}/`, '/simbank_scheduler/', 'shedulers')")
 
