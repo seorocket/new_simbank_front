@@ -43,6 +43,7 @@
                   :style="'font-size: 30px; color: ' + (props.row.pay_operation ? 'green' : 'red')")
             q-td(key="last_pay_operation" :props="props") {{ props.row.last_pay_operation }}
             q-td(key="imei" :props="props") -
+            q-td(key="goip_slot" :props="props" v-html="props.row.goip_slot ? props.row.goip_slot : '-' ")
             q-td(key="actions" :props="props")
                 q-btn.q-mr-sm(
                     size="sm"
@@ -214,6 +215,13 @@ export default {
           label: 'IMEI',
           align: 'center',
           sortable: false
+        },
+        {
+          name: 'goip_slot',
+          label: 'Используется',
+          field: 'goip_slot',
+          align: 'center',
+          sortable: true
         },
         {
           name: 'actions',
