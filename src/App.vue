@@ -51,6 +51,7 @@
                 label="Логин"
                 type="text"
                 lazy-rules
+                hint = 'Используйти только латинские буквы'
                 outlined
                 stack-label
                 style="width: 100%; margin-bottom: 10px"
@@ -236,11 +237,15 @@ export default {
     registeration(){
       const vm = this
       axios.post('/user/', vm.login).then(response => {
-        axios.defaults.headers.common.Authorization = `Token ${response.data.token}`
-        vm.login = {username: '', password: ''}
-        this.$store.dispatch('authorize', response.data.token)
-        vm.popup.register = false
-        vm.popup.auth = true
+        if(response.data.message == 'error'){
+         vm.showNotify('top-right', 'Данный пользователь существует', 'negative')
+        }else{
+          axios.defaults.headers.common.Authorization = `Token ${response.data.token}`
+          vm.login = {username: '', password: ''}
+          this.$store.dispatch('authorize', response.data.token)
+          vm.popup.register = false
+          vm.popup.auth = true
+        }
       }).catch(error => {
         console.log(error.detail)
         vm.showNotify('top-right', 'Произошла ошибка', 'negative')
