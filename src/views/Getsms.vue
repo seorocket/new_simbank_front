@@ -30,7 +30,7 @@
                     th Действие и статус
             tbody
                 tr(v-for="t in tasks.message" v-if="[1,2,3].indexOf(t.status) > -1")
-                    td(v-html="`${t.time_left || t.lifetime} мин.`")
+                    td(v-html="`${t.service ? t.service.name + ' /' : ' '} ${t.time_left || t.lifetime} мин.`")
                     td 
                         img(:src="t.phone.operator? t.phone.operator.image_path: none" style="position: relative; top: 3px; right: 5px;")
                         | {{ t.phone.operator ? t.phone.operator.name : 'Оператор не указан'}}  / {{ t.phone.name }}
