@@ -24,6 +24,7 @@
       v-slot:body="props"
       selection="multiple"
       :selected.sync="selected"
+      :rows-per-page-options="[0]"
     )
         q-tr(:props="props")
             q-td(key="selected")

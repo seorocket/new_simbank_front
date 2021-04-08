@@ -74,7 +74,31 @@
     q-layout(view="lHh lpR lff" v-if="token")
       q-header(elevated class="bg-primary text-white" height-hint="98")
         q-toolbar
-          q-btn(dense flat round icon="menu" @click="$store.commit('turnLeftDrawer', 'miniStateDrawerL')")
+          q-btn(dense flat round icon="menu" class="mobile-hide"  @click="$store.commit('turnLeftDrawer', 'miniStateDrawerL')")
+          div(class="q-pa-md mobile-only")
+            q-btn(color="primary" icon="menu")
+              q-menu(persistent auto-close)
+                q-list(style="min-width: 100px")
+                  q-item(clickable v-ripple to="/go-ip")
+                    q-item-section GOIP
+
+                  q-item(clickable v-ripple to="/sim-list")
+                    q-item-section SIM
+
+                  q-item(clickable v-ripple to="/sms-collector")
+                    q-item-section SMS Collector
+
+                  q-item(clickable v-ripple to="/settings")
+                    q-item-section SETTINGS
+
+                  q-item(clickable v-ripple to="/get-sms")
+                    q-item-section GET SMS
+
+                  q-item(clickable v-ripple to="/get-api")
+                    q-item-section API
+
+                  q-item(clickable v-ripple to="/get-faq")
+                    q-item-section FAQ    
 
           q-toolbar-title(style="text-align: center;") {{ $route.name }}
           q-icon(name="power_settings_new" @click="logOut()")

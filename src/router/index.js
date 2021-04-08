@@ -13,6 +13,14 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '',
+    name: 'Main',
+    icon: 'source',
+    text: 'GOIP',
+    show: true,
+    component: Goip
+  },
+  {
     path: '/go-ip',
     name: 'Main',
     icon: 'source',
