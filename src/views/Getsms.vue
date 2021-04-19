@@ -14,6 +14,7 @@
             div.service(v-for="s in settings.service" clickable v-on:click="updateTaskService(s.pk)" v-bind:class="{ 'active': active_state === s.pk }")
                 img(:src="'http://favicon.yandex.net/favicon/' + s.name" style="position: relative; top: 3px; margin-right: 5px;")
                 span {{ s.name }}
+            q-btn(color="green" label="Добавить сервис" style="width: 100%" clickable v-on:click="popup.add_service = true")
       div.col-md-10
         h3.text-h5(style="margin-bottom: -9px;") Активации
         table.table
@@ -71,6 +72,34 @@
                           color="deep-orange" 
                           icon="delete"
                           v-on:click="sendPost('task/task_delete/', {'task_pk': t.hash})")
+    q-dialog(
+      v-model="popup.add_service"
+      persistent
+      )
+      q-card
+        q-card-section(class="row items-center")
+          span(class="q-ml-sm text-h6") Добавить Сервис
+        q-card-section(class="row items-center")
+            q-input(
+              label="Фильтр по Sim"
+              :value="text"
+              hint="Например: +79999999999"
+              style="width: 250px"
+              @input="(val) => { filterFn(val,'sim'); }")
+        q-card-section(class="row items-center")
+            q-btn(
+              flat
+              label="Создать"
+              color="primary"
+              v-on:click="createTask(false)"
+              )
+            q-btn(
+              flat
+              label="Отмена"
+              color="primary"
+              v-on:click="popup.add_service = false"
+              )   
+
     q-dialog(
       v-model="popup.get_sim"
       persistent
@@ -147,6 +176,7 @@ export default {
       options: [],
       popup: {
         get_sim: false,
+        add_service: false,
         get_sim_data: {
           bank: "",
           name: "",
@@ -244,12 +274,50 @@ export default {
      axios.get('sim/?get_extended=1&sim=').then(response => {
         vm.options = response.data.map(function(i){return{label: i.name, value: i.name }})
       })
-     window.timeout = setInterval(() =>
-      vm.updateTasks()
-    , 5000)	
     window.timeout = setInterval(() =>
       vm.getData('/task/', 'tasks')
     , 10000)
+   // const socket = new WebSocket("wss://7i1.ru/ws/task-status/?token="+JSON.parse(localStorage.getItem('vuex')).token)
+   //   socket.onopen = () => {
+   //     console.log('Соединение установлено')
+   //   }
+   //   socket.onmessage = function(e) {
+   //     console.log("Received a message from the socket:", e.data);
+   //  }
+   //   socket.onclose = event => {
+   //     if (event.wasClean) {
+   //       console.log('Соединение закрыто чисто')
+   //     } else {
+   //       console.log('Обрыв соединения')
+   //     }
+   //     console.log('Код: ' + event.code + ' причина: ' + event.reason)
+
+//        setTimeout(this.sockets, 1000)
+  //    }
+    //  console.log(vm.tasks)
+     // socket.onmessage = event => {
+       //   let data = JSON.parse(event.data)
+      //    console.log(data.message.progress)
+      //    if(data.message.progress){
+      //      for (let i in data.message.progress) {
+      //        console.log(i)
+      //        let curr_date = new Date()
+      //        curr_date = date.extractDate(vm.tasks.message[i].datetime.split('.')[0] + '+03:00', 'YYYY-MM-DDTHH:mm:ssZ')
+      //        curr_date = curr_date.getTime() + 60 * vm.tasks.message[i].lifetime * 1000
+      //        if (date.getDateDiff(curr_date, new Date(), 'minutes')) {
+      //          vm.tasks.message[i]['time_left'] = date.getDateDiff(curr_date, new Date(), 'minutes')
+      //        }
+       //        vm.tasks.message[i].status = data.message.progress[i].message
+       //        if(data.message.progress[i].message){
+       //           vm.tasks.message[i].sms_data = JSON.parse(data.message.progress[i].message)
+       //        }
+       //     }
+        //  }
+     // }
+
+      //socket.onerror = error => {
+      //  console.log('Ошибка ' + error.message)
+      //}
   }
 }
 </script>
