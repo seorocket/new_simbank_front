@@ -22,6 +22,7 @@
           td {{ s.path }}
           td {{ s.datetime }}
           td
+            q-btn(size="sm" round color="deep-orange" icon="refresh" v-on:click="reboot_server(`${s.server_id}`, '/simbank_scheduler/restart_server/')")
             q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbit(`/simbank_scheduler/${s.pk}/`, '/simbank_scheduler/', 'shedulers')")
 
     q-dialog(
@@ -401,6 +402,13 @@ export default {
     }
   },
   methods: {
+    reboot_server (data, url) {
+      const vm = this
+      axios.post(url, {'server_id': data}).then(response => {
+        console.log(response.data)
+        vm.showNotify('top-right', 'Сервер перезагружается!', 'positive')
+      })
+    },
     sumbit (data, url, callback, path) {
       const vm = this
       vm.$q.dialog({

@@ -309,7 +309,10 @@ export default {
         textColor: 'white', 
         message: message, 
         position: position,
-        timeout: 3000
+        timeout: 0,
+        actions: [
+          { label: 'Скрыть', color: 'white', handler: () => { /* ... */ } }
+        ]
       })
     }
   },

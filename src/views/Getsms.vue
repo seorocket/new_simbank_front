@@ -81,17 +81,17 @@
           span(class="q-ml-sm text-h6") Добавить Сервис
         q-card-section(class="row items-center")
             q-input(
-              label="Фильтр по Sim"
+              label="Введите сервис"
               :value="text"
-              hint="Например: +79999999999"
+              hint="Например: mail.ru"
               style="width: 250px"
-              @input="(val) => { filterFn(val,'sim'); }")
+              v-model="add_service_item.service_name")
         q-card-section(class="row items-center")
             q-btn(
               flat
               label="Создать"
               color="primary"
-              v-on:click="createTask(false)"
+              v-on:click="createService()"
               )
             q-btn(
               flat
@@ -161,7 +161,7 @@ export default {
           sim: ''
        },
       settings: {
-        service: [{"pk":1,"name":"yahoo.com","url":"yahoo.com","comment":null},{"pk":2,"name":"gmail.com","url":"mail.google.com","comment":null},{"pk":4,"name":"mail.ru","url":"mail.ru","comment":null}]
+        service: []
       },
       task_data: {
         lifetime: 20,
@@ -174,6 +174,9 @@ export default {
       },
       active_state : '1',
       options: [],
+      add_service_item: {
+        service_name: ''
+      },
       popup: {
         get_sim: false,
         add_service: false,
@@ -237,6 +240,18 @@ export default {
         vm.task_service.service_id = service_id
         vm.active_state = service_id
     },
+    getService(){
+      const vm = this
+      axios.get('service/').then(response => {
+           vm.settings.service = response.data
+      })
+    },
+    createService(){
+      const vm = this
+      axios.post('service/create_service/', vm.add_service_item).then(response => {
+         vm.settings.service = response
+      })
+    },
     createTask (choose=false) {
       const vm = this
       const url = 'task/'
@@ -274,6 +289,7 @@ export default {
      axios.get('sim/?get_extended=1&sim=').then(response => {
         vm.options = response.data.map(function(i){return{label: i.name, value: i.name }})
       })
+    this.getService()
     window.timeout = setInterval(() =>
       vm.getData('/task/', 'tasks')
     , 10000)
@@ -326,7 +342,7 @@ export default {
     width: 100%;
   }
   .services .service {
-    padding: 0.5rem 2rem;
+    padding: 0.5rem 1rem;
   }
   .services .service:nth-child(odd) {
     background: rgb(246, 250, 254);
