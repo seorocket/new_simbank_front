@@ -328,7 +328,7 @@ export default {
           login: '1',
           password: '',
           path_sms: '',
-          type: {'label': '32', 'value': '32'}
+          type: {'label': '', 'value': ''}
         },
         //- SIMBANK
         add_simbank: false,
@@ -342,7 +342,7 @@ export default {
             scheduler: "",
             simbankid: "",
             smb_id: "",
-            type: {'label': '128', 'value': 1}
+            type: {'label': '', 'value': ''}
         },
         //- SHEDULER
         add_sheduler: false,
