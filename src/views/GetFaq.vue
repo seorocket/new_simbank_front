@@ -24,7 +24,7 @@
       v-model="popup.get_task"
       persistent
       )
-      q-card
+      q-card(style="max-width: 1500px;width:1000px")
         q-card-section(class="row items-center")
           span(class="q-ml-sm text-h6") Ответы на заявку
         q-card-section(class="row items-center")
@@ -57,7 +57,7 @@
       v-model="popup.create_task"
       persistent
       )
-      q-card
+      q-card(style="max-width: 1500px;width:1000px")
         q-card-section(class="row items-center")
           span(class="q-ml-sm text-h6") Создание заявки
         q-card-section(class="row items-center")
