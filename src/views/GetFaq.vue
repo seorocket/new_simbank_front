@@ -9,11 +9,50 @@
           label="Создать заявку" 
           no-caps
           v-on:click="popup.create_task = true")
-        tbody
-          tr(v-for="t in tasks")
-            td {{ t.name }}
-            td
-              q-btn(size="sm" round color="deep-greeb" label="Посмотреть заявку" v-on:click="sumbit(`/task_message/${t.pk}/`)")          
+        table.table
+          thead
+            tr
+              th Название заявки
+              th Действие
+          tbody
+            tr(v-for="t in tasks")
+              td {{ t.name }}
+              td
+                q-btn(size="sm" color="green" round icon="visibility" v-on:click="sumbit(`/task_message/${t.pk}/`)")
+                q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbitDelete(`/task_message/${t.pk}/`)")          
+    q-dialog(
+      v-model="popup.get_task"
+      persistent
+      )
+      q-card
+        q-card-section(class="row items-center")
+          span(class="q-ml-sm text-h6") Ответы на заявку
+        q-card-section(class="row items-center")
+          div(class="col-12" v-for="t in get_task.message")
+            div(:class="t.quest? 'text-right': 'text-left'") 
+              div(v-if="t.quest === true" style="color:green; font-weight:600") Вы
+              div(v-if="t.quest === false" style="color:blue; font-weight:600") Администратор
+              div {{ t.text }}
+        q-card-section(class="row items-center")
+            q-input(
+              label="Ответ"
+              :value="text"
+              v-model="task.text"
+              style="width: 100%")
+        q-card-section(class="row items-center")
+            q-btn(
+              flat
+              label="Создать"
+              color="primary"
+              v-if="popup.get_task"
+              v-on:click="sendQuest()"
+              )
+            q-btn(
+              flat
+              label="Отмена"
+              color="primary"
+              v-on:click="popup.get_task = false; task.task_id = null"
+              )
     q-dialog(
       v-model="popup.create_task"
       persistent
@@ -25,13 +64,13 @@
             q-input(
               label="Заголовок заявки"
               :value="text"
-              v-model="task.title"
+              v-model="task.name"
               style="width: 100%")
         q-card-section(class="row items-center")
             q-input(
               label="Вопрос"
               :value="text" 
-              v-model="task.quest"
+              v-model="task.text"
               style="width: 100%")
         q-card-section(class="row items-center")
             q-btn(
@@ -45,7 +84,7 @@
               flat
               label="Отмена"
               color="primary"
-              v-on:click="popup.get_task = false"
+              v-on:click="popup.create_task = false"
               )    
 </template>
 <script>
@@ -60,8 +99,8 @@ export default {
          create_task: false,
        },
        task: {
-        quest: '',
-        title: '',
+        text: '',
+        name: '',
         task_id: null,
       },
     }
@@ -71,22 +110,55 @@ export default {
       const vm = this
       axios.get(url).then(response => {
         vm.get_task = response.data
+        vm.task.task_id = response.data.pk
+        vm.popup.get_task = true
       })
+    },
+    sumbitDelete (url) {
+      const vm = this
+      vm.$q.dialog({
+        title: 'Подтвердите действие',
+        message: 'Вы точно хотите удалить эти настройки?',
+        ok: {
+          push: true
+        },
+        cancel: {
+          push: true,
+          color: 'negative'
+        },
+        persistent: true
+      }).onOk(() => {
+        vm.deleteObject(url)
+      })
+    },
+    deleteObject (url, url_callback=false, path=false) {
+        const vm = this
+        axios.delete(url).then(response => {
+          if (response.status === 204) {
+            if ( url_callback && path ) {
+                vm.getData()
+            }
+            vm.getData()
+            vm.showNotify('top-right', 'Заявка удалена!', 'negative')
+          }
+        })
     },
     sendQuest() {
       const vm = this
       if(vm.task.task_id === null){
-        axios.post('/goip/goip_create/', vm.task).then(response => {
+        axios.post('task_message/', vm.task).then(response => {
             vm.popup.create_task = false
             vm.popup.get_task = false
             console.log(response)
+            vm.getData()
             vm.showNotify('top-right', 'Заявка добавлена!', 'positive')          
         })
        }else{
-         axios.post('/goip/goip_create/', vm.task).then(response => {
+         axios.post('task_message/add_massege/', vm.task).then(response => {
             vm.popup.create_task = false
             vm.popup.get_task = false
             console.log(response)
+            vm.getData()
             vm.showNotify('top-right', 'Заявка добавлена!', 'positive')
         })
        }
@@ -104,3 +176,53 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  .table th {
+    font-weight: normal;
+    font-size: 15px;
+    text-transform: uppercase;
+    background: #e6e3da;
+    padding: 10px;
+  }
+  .table tbody tr td, .table tbody tr th {
+    text-align: center;
+    padding: 5px 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  .table tbody tr:nth-child(even) td{
+    background: #eee;
+  }
+  .page_title_divider {
+    text-align: center;
+    min-width: 1px;
+    max-width: 100%;
+    font-size: 21px;
+    font-weight: normal;
+    letter-spacing: 0.01em;
+    color: #fff;
+    background: #027BE3;
+    line-height: 50px;
+    opacity: 0.9;
+    box-shadow: 0 2px 8px -3px rgb(0 0 0);
+    margin: 20px 0;
+  }
+  .green_circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: green;
+    display: inline-block;
+  }
+  .red_circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: red;
+    display: inline-block;
+  }
+</style>
