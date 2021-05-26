@@ -167,6 +167,9 @@ export default {
         const vm = this
         axios.get('task_message/').then(response => {
             vm.tasks = response.data
+            vm.task.text = ''
+            vm.task.name = ''
+            vm.task_id = null
         })
     },
   },
