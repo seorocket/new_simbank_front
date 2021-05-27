@@ -9,6 +9,7 @@
           label="Создать заявку" 
           no-caps
           v-on:click="popup.create_task = true")
+      div.col-md-12.q-pa-md
         table.table
           thead
             tr
@@ -37,6 +38,7 @@
             q-input(
               label="Ответ"
               :value="text"
+              type="textarea"
               v-model="task.text"
               style="width: 100%")
         q-card-section(class="row items-center")
@@ -70,6 +72,7 @@
             q-input(
               label="Вопрос"
               :value="text" 
+              type="textarea"
               v-model="task.text"
               style="width: 100%")
         q-card-section(class="row items-center")
