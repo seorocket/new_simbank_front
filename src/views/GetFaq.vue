@@ -13,10 +13,12 @@
         table.table
           thead
             tr
+              th ID
               th Название заявки
               th Действие
           tbody
             tr(v-for="t in tasks")
+              td {{ t.pk }}
               td {{ t.name }}
               td
                 q-btn(size="sm" color="green" round icon="visibility" v-on:click="sumbit(`/task_message/${t.pk}/`)")
