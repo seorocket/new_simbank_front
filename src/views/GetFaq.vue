@@ -15,11 +15,15 @@
             tr
               th ID
               th Название заявки
+              th Статус заявки
               th Действие
           tbody
             tr(v-for="t in tasks")
               td {{ t.pk }}
               td {{ t.name }}
+              td
+                div(v-if="t.newmessage === true" style="color:green; font-weight:600") Новое сообщение
+                div(v-if="t.newmessage === false" style="color:blue; font-weight:600") Новых сообщений нет
               td
                 q-btn(size="sm" color="green" round icon="visibility" v-on:click="sumbit(`/task_message/${t.pk}/`)")
                 q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbitDelete(`/task_message/${t.pk}/`)")          
@@ -55,7 +59,7 @@
               flat
               label="Отмена"
               color="primary"
-              v-on:click="popup.get_task = false; task.task_id = null"
+              v-on:click="popup.get_task = false; task.task_id = null; getData()"
               )
     q-dialog(
       v-model="popup.create_task"
@@ -89,7 +93,7 @@
               flat
               label="Отмена"
               color="primary"
-              v-on:click="popup.create_task = false"
+              v-on:click="popup.create_task = false; getData()"
               )    
 </template>
 <script>
