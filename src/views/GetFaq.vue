@@ -237,4 +237,22 @@ export default {
     background: red;
     display: inline-block;
   }
+pre {
+    background: #e5f1ff;
+    padding: 10px;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+  }
 </style>

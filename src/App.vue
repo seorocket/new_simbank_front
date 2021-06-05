@@ -155,6 +155,10 @@
             q-item-section
               q-item-label SUPPORT
               q-item-label(caption) Вопрос-Ответ
+          q-item
+            q-item-section
+              q-item-label BALANCE
+              q-item-label(caption) {{balance}} руб.
 
       q-drawer(show-if-above :mini="miniStateDrawerR" side="right" bordered)
         q-toolbar
@@ -198,8 +202,6 @@
             div(v-if="s.result" width="40%" style="display: table; margin: 0 auto; border-radius: 50%; background: green; width: 20px; height: 20px; box-shadow: 0 0 1px 1px green;")
             div(v-else width="40%" style="display: table; margin: 0 auto; border-radius: 50%; background: red; width: 20px; height: 20px; box-shadow: 0 0 1px 1px red;")
 
-
-
       q-page-container(style="padding-right: 15px;")
         router-view
 
@@ -226,7 +228,8 @@ export default {
         password: ''
       },
       goip_settings: [],
-      goip_lines: []
+      goip_lines: [],
+      balance: 0
     }
   },
   created () {
@@ -246,6 +249,12 @@ export default {
       if (this.token) {
         axios.defaults.headers.common.Authorization = `Token ${this.token}`
       }
+    },
+    getBalance(){
+      const vm = this
+      axios.post('/user/check_balance/', {"token": JSON.parse(localStorage.getItem('vuex')).token}).then(response => {
+         vm.balance = response.data.balance
+      })
     },
     authorization(){
       const vm = this
@@ -328,7 +337,10 @@ export default {
         })
       }
     }
-  }
+  },
+ beforeMount () {
+    this.getBalance()
+ }
 }
 </script>
 
