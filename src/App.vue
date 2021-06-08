@@ -35,7 +35,7 @@
                 color="primary"
                 type="submit"
                 )
-              q-btn(label="Зарегестрироваться" color="primary"  @click="popup.auth = false; popup.register = true")
+              q-btn(label="Зарегистрироваться" color="primary"  @click="popup.auth = false; popup.register = true")
     div(v-if="popup.register")
       q-dialog(
         v-model="dialog"
