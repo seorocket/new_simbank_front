@@ -30,7 +30,8 @@
           td
             q-btn(v-if="g.sim_id" size="xs" color="secondary" label="Отправить СМС" style="margin-right: 10px;" @click="popup.sendSms = true; popup.sendSms_data.line_id = g.line_id")
             q-btn(v-if="g.sim_id" size="xs" color="secondary" label="USSD" style="margin-right: 10px;" @click="popup.sendUSSD = true; popup.sendUSSD_data.line_id = g.line_id")
-            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="отключить" style="margin-right: 10px;" @click="removeSIM(g.sim_id)")
+            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="Узнать номер" style="margin-right: 10px;" @click="getSimNumber(g.sim_id,g.line_id,g.operator)")
+            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="Отключить" style="margin-right: 10px;" @click="removeSIM(g.sim_id)")
 
 
     q-dialog(
@@ -275,6 +276,13 @@ export default {
             vm.getPageInfo()
             vm.showNotify('top-right', 'Сим-карта успешно извлечена!', 'positive')
           }
+        })
+    },
+    getSimNumber (sim, goip, operator) {
+        const vm = this
+        axios.post('/goip/send_ussd_phone/', {'sim_id': sim, 'goip_id': goip, 'operator': operator}).then(response => {
+          vm.getPageInfo()
+          vm.showNotify('top-right', response.data, 'positive')
         })
     },
     sendUSSD () {
