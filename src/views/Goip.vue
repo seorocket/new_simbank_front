@@ -22,8 +22,8 @@
             div.red_circle(v-else)
           td 
             template(v-if="g.phone_number")
-              img(:src="g.operator_image" style="position: relative; top: 3px;")
-              |  {{ g.phone_number }}
+              img(:src="g.operator_instance.image_path" style="position: relative; top: 3px;")
+              | {{g.operator}} / {{ g.phone_number }}
           td {{ g.signal }}
           td(v-html=" g.sim_id ? g.sim_id : '-'")
           td {{ g.imei }}
