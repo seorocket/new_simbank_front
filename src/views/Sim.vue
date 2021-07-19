@@ -16,6 +16,13 @@
       no-caps
       v-on:click="upload_sim()")
 
+    q-input(
+      outlined
+      v-model="search"
+      label="Поиск по номеру"
+      style="width: 300px; float:right;"
+    )
+
     q-table(
       title="Список номеров"
       :data="data"
@@ -37,7 +44,7 @@
             q-td(key="name" :props="props")
               <img :src="props.row.operator_image" style="position: relative; top: 2px; right: 3px;"> {{ props.row.name }}
             q-td(key="pk" :props="props")
-                button Посмотреть
+                button(v-on:click="getTaskSms(props.row.pk)") Посмотреть
             q-td(key="pay_operation" :props="props")
                 q-icon(
                   :name="props.row.pay_operation ? 'add_circle' : 'remove_circle'"
@@ -54,6 +61,35 @@
                 )
                 q-btn(size="sm" round color="secondary" icon="edit" style="margin-right: 10px;" v-on:click="openEdit('add_sim', props.row)")
                 q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbit(`/sim/${props.row.pk}/`, '/sim/', 'data')")
+    q-dialog(
+      v-model="popup.get_sms_task"
+      persistent
+      )
+      q-card
+        q-card-section(class="row items-center")
+          span(class="q-ml-sm text-h6") Список SMS
+          table.table
+            colgroup
+              col(width="15%")
+              col(width="50%")
+              col(width="15%")
+            thead
+                tr
+                    th Отправитель
+                    th Сообщение
+                    th Дата отправки
+            tbody
+                tr(v-for="t in task.sms")
+                    td {{t.datetime}}
+                    td {{t.content}}
+                    td {{t.sms_sender}} 
+            q-btn(
+              flat
+              label="Закрыть"
+              color="primary"
+              v-on:click="popup.get_sms_task =  false"
+              )
+
     q-dialog(
       v-model="popup.activate_sim"
       persistent
@@ -171,6 +207,8 @@ export default {
     return {
       selected: [],
       data: [],
+      data_tmp: [],
+      search: '',
       data2: [],
       columns: [
         {
@@ -231,9 +269,13 @@ export default {
           sortable: false
         },
       ],
+      task:{
+        sms:[],
+      },
       popup: {
         add_sim: false,
         edit_sim: false,
+        get_sms_task: false,
         activate_sim: false,
         activate_sim_data: {
           goip: '',
@@ -370,11 +412,23 @@ export default {
             })
           } else {
             vm[path] = response.data
+            vm.data_tmp = response.data
           }
           if (url === '/simbank/' || url === '/operator/') {
             vm.settings[path] = response.data.map(function(i){ return {'label': i.name, 'value': i.pk}})
           }
         })
+    },
+    getTaskSms(sim_id){
+       const vm = this
+       axios.post('/sim/get_task_by_sim/', {'sim': sim_id}).then(response => {
+         if(response.data.length > 0){
+           vm.task.sms = response.data
+           vm.popup.get_sms_task = true
+         }else{          
+            vm.showNotify('top-right', 'SMS на указаной сим не найдено', 'negative')
+         }
+       })
     },
     showNotify (position, message, color) {
       this.$q.notify({
@@ -384,6 +438,16 @@ export default {
         position: position,
         timeout: 3000
       })
+    }
+  },
+  watch: {
+    'search' (event) {
+      const vm = this
+      if (event !== '') {
+        vm.data = vm.data_tmp.filter(item => item.name.toLowerCase().indexOf(event.toLowerCase()) > -1)
+      } else {
+        vm.drivers = vm.data_tmp
+      } 
     }
   },
   beforeMount () {

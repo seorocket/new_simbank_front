@@ -1,4 +1,4 @@
-<template lang="pug">
+`цw<template lang="pug">
   div
     div.row
       div.col-md-2.q-pa-md
@@ -72,6 +72,19 @@
                           color="deep-orange" 
                           icon="delete"
                           v-on:click="sendPost('task/task_delete/', {'task_pk': t.hash})")
+                        q-btn.q-mr-sm(
+                          size="sm"
+                          color="secondary"
+                          label="Завершить и оставить sim"
+                          v-on:click="sendPost('task/set_phone_used_status_with_sim/', {'hash': t.hash})"
+                          style="float: left;"
+                          )
+                        q-btn.q-mr-sm(
+                          size="sm"
+                          color="secondary"
+                          label="Изменить время"
+                          v-on:click="newlifetime.hash = t.hash; popup.lifetimep = true"
+                          )
     q-dialog(
       v-model="popup.add_service"
       persistent
@@ -98,6 +111,33 @@
               label="Отмена"
               color="primary"
               v-on:click="popup.add_service = false"
+              )
+
+    q-dialog(
+      v-model="popup.lifetimep"
+      persistent
+      )
+      q-card
+        q-card-section(class="row items-center")
+          span(class="q-ml-sm text-h6") Продлить время
+        q-card-section(class="row items-center")
+            q-input(
+              label="Введите новое время"
+              :value="text"
+              style="width: 250px"
+              v-model="newlifetime.lifetime")
+        q-card-section(class="row items-center")
+            q-btn(
+              flat
+              label="Создать"
+              color="primary"
+              v-on:click="saveNewLifeTime()"
+              )
+            q-btn(
+              flat
+              label="Отмена"
+              color="primary"
+              v-on:click="popup.lifetimep = false"
               )   
 
     q-dialog(
@@ -114,6 +154,12 @@
               hint="Например: +79999999999"
               style="width: 250px"
               @input="(val) => { filterFn(val,'sim'); }")
+        q-card-section(class="row items-center")
+            q-input(
+              label="Время сессии"
+              :value="text"
+              style="width: 250px"
+              v-model="task_data.lifetime")
         q-card-section(class="row items-center")     
             q-select(
                 filled
@@ -177,9 +223,14 @@ export default {
       add_service_item: {
         service_name: ''
       },
+      newlifetime:{
+        hash: '',
+        lifetime: ''
+      },
       popup: {
         get_sim: false,
         add_service: false,
+        lifetimep: false,
         get_sim_data: {
           bank: "",
           name: "",
@@ -239,6 +290,14 @@ export default {
 	const vm = this
         vm.task_service.service_id = service_id
         vm.active_state = service_id
+    },
+    saveNewLifeTime(){
+      const vm = this
+      axios.post('/task/update_lifetime/', vm.newlifetime).then(response => {
+            vm.popup.lifetimep = false;
+            vm.getData('/task/', 'tasks');
+            console.log(response);
+      })      
     },
     getService(){
       const vm = this

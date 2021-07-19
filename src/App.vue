@@ -161,6 +161,8 @@
             q-item-section
               q-item-label BALANCE
               q-item-label(caption) {{balance}} руб.
+              q-item-label User
+              q-item-label(caption) {{user}}
               p(style="padding-top:21px;")
                 a(target="_blank" style="color:red; font-weight:bold; font-size:20px;"  href="https://simbank.pro/payment/") Страница оплаты
 
@@ -233,7 +235,8 @@ export default {
       },
       goip_settings: [],
       goip_lines: [],
-      balance: 0
+      balance: 0,
+      user: ''
     }
   },
   created () {
@@ -258,6 +261,7 @@ export default {
       const vm = this
       axios.post('/user/check_balance/', {"token": JSON.parse(localStorage.getItem('vuex')).token}).then(response => {
          vm.balance = response.data.balance
+         vm.user = response.data.user
       })
     },
     authorization(){
