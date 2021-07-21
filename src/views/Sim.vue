@@ -15,7 +15,7 @@
       label="Пересканировать SIM"
       no-caps
       v-on:click="upload_sim()")
-
+    
     q-input(
       outlined
       v-model="search"
@@ -61,6 +61,20 @@
                 )
                 q-btn(size="sm" round color="secondary" icon="edit" style="margin-right: 10px;" v-on:click="openEdit('add_sim', props.row)")
                 q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbit(`/sim/${props.row.pk}/`, '/sim/', 'data')")
+    q-select(
+      v-model='masd'
+      :options='masdo'
+      style="width:250px; float:left;"
+      label='Выбрать действие'
+      )
+    q-btn(
+      :ripple="false"
+      color="secondary"
+      style="margin: 15px 0 10px 10px;"
+      label="Применить"
+      no-caps
+      v-on:click="up_masd()")
+
     q-dialog(
       v-model="popup.get_sms_task"
       persistent
@@ -210,6 +224,8 @@ export default {
       data_tmp: [],
       search: '',
       data2: [],
+      masd: '',
+      masdo: [{label: 'Включить платные действия', value:"1"},{ label:'Выключить платные действия', value:"2"}],
       columns: [
         {
           name: 'status',
@@ -339,6 +355,22 @@ export default {
          if(response.data.m == true){
             vm.showNotify('top-right', 'Настройки добавлены!', 'positive')
             this.getData('/sim/', 'data')
+         }
+      });
+    },
+    up_masd(){
+      const vm =this
+      console.log(vm.masd.value);
+      let ss = vm.selected.map((field) => {
+        return field.pk
+      });
+      console.log(ss);
+       axios.post('/sim/update_pay/',{'status': vm.masd.value, 'sim': ss}).then(response => {
+         if(response.data.message == 'ok'){
+            vm.showNotify('top-right', 'Настройки изменены!', 'positive')
+            this.getData('/sim/', 'data')
+         }else{
+            vm.showNotify('top-right', 'Произошла ошибка', 'negative')
          }
       });
     },
