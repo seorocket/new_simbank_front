@@ -8,6 +8,8 @@ import Settings from '../views/Settings.vue'
 import SmsCollector from '../views/SmsCollector.vue'
 import GetApi from '../views/GetApi.vue'
 import GetFaq from '../views/GetFaq.vue'
+import GetHistory from '../views/GetHistory.vue'
+import GetTelegram from '../views/GetTelegram.vue'
 
 Vue.use(VueRouter)
 
@@ -59,6 +61,22 @@ const routes = [
     text: 'Get API',
     show: true,
     component: GetApi
+  },
+  {
+    path: '/get-history',
+    name: 'Get History',
+    icon: 'source',
+    text: 'Get History',
+    show: true,
+    component: GetHistory
+  },
+  {
+    path: '/get-telegram',
+    name: 'Get Telegram',
+    icon: 'source',
+    text: 'Get Telegram',
+    show: true,
+    component: GetTelegram
   },
   {
     path: '/get-faq',

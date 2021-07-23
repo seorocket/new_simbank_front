@@ -100,7 +100,13 @@
                     q-item-section API
 
                   q-item(clickable v-ripple to="/get-faq")
-                    q-item-section SUPPORT    
+                    q-item-section SUPPORT
+    
+                  q-item(clickable v-ripple to="/get-history")
+                    q-item-section ИСТОРИЯ ИЗМЕНЕНИЙ
+
+                  q-item(clickable v-ripple to="/get-telegram")
+                    q-item-section TELEGRAM BOT
 
           q-toolbar-title(style="text-align: center;") {{ $route.name }}
           q-icon(name="power_settings_new" @click="logOut()")
@@ -157,6 +163,14 @@
             q-item-section
               q-item-label SUPPORT
               q-item-label(caption) Вопрос-Ответ
+          q-item(clickable href="/get-history" to="/get-history")
+            q-item-section
+              q-item-label CHANGE HISTORY
+              q-item-label(caption) История изменений 
+          q-item(clickable href="/get-telegram" to="/get-telegram")
+            q-item-section
+              q-item-label TELEGRAM
+              q-item-label(caption) BOT
           q-item
             q-item-section
               q-item-label BALANCE
