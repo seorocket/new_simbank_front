@@ -36,7 +36,7 @@
                         img(:src="t.phone.operator? t.phone.operator.image_path: none" style="position: relative; top: 3px; right: 5px;")
                         | {{ t.phone.operator ? t.phone.operator.name : 'Оператор не указан'}}  / {{ t.phone.name }}
                     td 
-                      template(v-if="t.status == 1") Номер подготваливается
+                      template(v-if="t.status == 1") Номер подготавливается
                       template(v-if="t.status == 2") Используйте номер для активации и нажмите кнопку "смс отправлено".
                         br
                         q-btn.q-mr-sm(
