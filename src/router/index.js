@@ -6,6 +6,7 @@ import Simbank from '../views/Simbank.vue'
 import Getsms from '../views/Getsms.vue'
 import Settings from '../views/Settings.vue'
 import SmsCollector from '../views/SmsCollector.vue'
+import CallCollector from '../views/CallCollector.vue'
 import GetApi from '../views/GetApi.vue'
 import GetFaq from '../views/GetFaq.vue'
 import GetHistory from '../views/GetHistory.vue'
@@ -93,6 +94,14 @@ const routes = [
     text: 'SMS COLLECTOR',
     show: true,
     component: SmsCollector
+  },
+  {
+    path: '/call-collector',
+    name: 'CALL COLLECTOR',
+    icon: 'source',
+    text: 'CALL COLLECTOR',
+    show: true,
+    component: CallCollector
   },
   {
     path: '/settings',
