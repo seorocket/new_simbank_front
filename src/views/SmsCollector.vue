@@ -184,7 +184,12 @@ export default {
         axios.post(url, data).then(response => {
             vm[path] = response.data.message
 
-        })
+        }).catch(error => {
+       if(error.response.status == 403){
+         vm.showNotify('top-right', 'Пополните баланс!', 'negative')
+         vm.$store.dispatch('authorize', '')
+        }
+       })
     },
     showNotify (position, message, color) {
       this.$q.notify({

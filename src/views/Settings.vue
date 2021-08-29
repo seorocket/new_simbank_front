@@ -447,7 +447,12 @@ export default {
             }
             vm.showNotify('top-right', 'Настройки добавлены!', 'positive')
           }
-        })
+        }).catch(error => {
+       if(error.response.status == 403){
+         vm.showNotify('top-right', 'Пополните баланс!', 'negative')
+         vm.$store.dispatch('authorize', '')
+        }
+       })
     },
     openEdit( popup, item ) {
         const vm = this

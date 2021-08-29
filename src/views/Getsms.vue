@@ -347,7 +347,12 @@ export default {
     this.getData('/task/', 'tasks')
      axios.get('sim/?get_extended=1&sim=').then(response => {
         vm.options = response.data.map(function(i){return{label: i.name, value: i.name }})
-      })
+      }).catch(error => {
+       if(error.response.status == 403){
+         vm.showNotify('top-right', 'Пополните баланс!', 'negative')
+         vm.$store.dispatch('authorize', '')
+        }
+       })
     this.getService()
     window.timeout = setInterval(() =>
       vm.getData('/task/', 'tasks')

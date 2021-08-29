@@ -356,7 +356,12 @@ export default {
             vm.showNotify('top-right', 'Настройки добавлены!', 'positive')
             this.getData('/sim/', 'data')
          }
-      });
+      }).catch(error => {
+       if(error.response.status == 403){
+         vm.showNotify('top-right', 'Пополните баланс!', 'negative')
+         vm.$store.dispatch('authorize', '')
+        }
+       });
     },
     up_masd(){
       const vm =this

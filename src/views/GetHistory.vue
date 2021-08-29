@@ -36,7 +36,12 @@ export default {
    const vm = this
       axios.get('history_page/').then(response => {
          vm.tasks = response.data
-      })
+      }).catch(error => {
+       if(error.response.status == 403){
+         vm.showNotify('top-right', 'Пополните баланс!', 'negative')
+         vm.$store.dispatch('authorize', '')
+        }
+       })
   }
 }
 </script>
