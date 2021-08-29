@@ -267,7 +267,12 @@ export default {
       const vm = this
       axios.get('/goip/').then(response => {
         vm.goip_lines = response.data.message
-      })
+      }).catch(error => {
+       if(error.response.status == 403){
+         vm.showNotify('top-right', 'Пополните баланс!', 'negative')
+         vm.$store.dispatch('authorize', '')
+        }
+       })
     },
     removeSIM (sim) {
         const vm = this
