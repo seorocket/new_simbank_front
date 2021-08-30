@@ -18,7 +18,7 @@ export default {
   },
   beforeMount() {
    const vm = this
-      vm.toks = localStorage.token
+      vm.toks = vm.$store.state.token;
       axios.get('api_page/').then(response => {
          vm.dataContent = response.data.message.content
       }).catch(error => {
