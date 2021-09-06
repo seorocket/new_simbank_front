@@ -8,6 +8,7 @@ import Settings from '../views/Settings.vue'
 import SmsCollector from '../views/SmsCollector.vue'
 import CallCollector from '../views/CallCollector.vue'
 import GetApi from '../views/GetApi.vue'
+import Cabinet from '../views/Cabinet.vue'
 import GetFaq from '../views/GetFaq.vue'
 import GetHistory from '../views/GetHistory.vue'
 import GetTelegram from '../views/GetTelegram.vue'
@@ -86,6 +87,14 @@ const routes = [
     text: 'Get FAQ',
     show: true,
     component: GetFaq
+  },
+  {
+    path: '/get-cabinet',
+    name: 'Cabinet',
+    icon: 'source',
+    text: 'Cabinet',
+    show: true,
+    component: Cabinet
   },
   {
     path: '/sms-collector',

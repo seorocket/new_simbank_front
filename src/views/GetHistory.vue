@@ -1,14 +1,6 @@
 <template lang="pug">
   div
     div.row
-      div.col-md-2.q-pa-md
-        q-btn(
-          :ripple="false" 
-          color="secondary" 
-          style="margin-left: 10px;" 
-          label="Создать заявку" 
-          no-caps
-          v-on:click="popup.create_task = true")
       div.col-md-12.q-pa-md
         table.table
           thead
