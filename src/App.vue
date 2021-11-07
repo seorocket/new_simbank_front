@@ -280,7 +280,7 @@ export default {
   },
   methods: {
     setAxiosConf () {
-      axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
+      axios.defaults.baseURL = 'https://simbank.pro/api'
       if (this.token) {
         axios.defaults.headers.common.Authorization = `Token ${this.token}`
       }
@@ -289,7 +289,9 @@ export default {
       const vm = this
       axios.post('/user/check_balance/', {"token": JSON.parse(localStorage.getItem('vuex')).token}).then(response => {
          vm.balance = response.data.balance
-         vm.user = response.data.user
+         vm.user = response.data.user 
+         vm.super_user = response.data.super
+         localStorage.super_user = response.data.super
       })
     },
     authorization(){
@@ -299,6 +301,7 @@ export default {
         axios.defaults.headers.common.Authorization = `Token ${response.data.token}`
         vm.login = {username: '', password: ''}
         vm.super_user = response.data.super
+        localStorage.super_user = response.data.super
         this.$store.dispatch('authorize', response.data.token)
        } else{
            vm.showNotify('top-right', response.data.message, 'negative')

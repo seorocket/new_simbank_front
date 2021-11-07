@@ -150,6 +150,24 @@ export default {
         axios.post('/user/get_employee/').then(response => {            
             vm.user_settings = response.data          
         })
+        axios.get('/goip/').then(response => {
+            let nameLengths = response.data.message.map(function(goip) {
+                return goip.line_id;
+            });
+            vm.goips = nameLengths                        
+        })        
+        if (vm.popup.add_user_data.goip_ports.length == 0) {
+            vm.popup.add_user_data.goip_ports = [ vm.goips[0] ]
+        }
+        axios.get('/sim/').then(response => {
+            let nameLengths = response.data.map(function(sim) {
+                return sim.slot;
+            });
+            vm.sim_list = nameLengths
+        })               
+        if (vm.popup.add_user_data.sim_list.length == 0) {
+            vm.popup.add_user_data.sim_list = [ vm.sim_list[0] ]
+        }
     },
     deleteUser (pk) {
         const vm = this
@@ -194,14 +212,20 @@ export default {
             let nameLengths = response.data.message.map(function(goip) {
                 return goip.line_id;
             });
-            vm.goips = nameLengths
-        })
+            vm.goips = nameLengths                        
+        })        
+        if (vm.popup.add_user_data.goip_ports.length == 0) {
+            vm.popup.add_user_data.goip_ports = [ vm.goips[0] ]
+        }
         axios.get('/sim/').then(response => {
             let nameLengths = response.data.map(function(sim) {
                 return sim.slot;
             });
             vm.sim_list = nameLengths
-        })
+        })               
+        if (vm.popup.add_user_data.sim_list.length == 0) {
+            vm.popup.add_user_data.sim_list = [ vm.sim_list[0] ]
+        }
     },
     editObject (data, url, url_callback=false, path=false) {
         const vm = this        
