@@ -176,7 +176,7 @@
             q-item-section
               q-item-label CHANGE HISTORY
               q-item-label(caption) История изменений           
-          q-item(clickable href="/get-cabinet" to="/get-cabinet" v-if="super_user")
+          q-item(clickable href="/get-cabinet" to="/get-cabinet" v-if="super_user && display_cab")
             q-item-section
               q-item-label Cabinet
               q-item-label(caption) Разграничение прав пользователя
@@ -264,7 +264,8 @@ export default {
       goip_lines: [],
       balance: 0,
       user: '',
-      super_user: false
+      super_user: false,
+      display_cab: false
     }
   },
   created () {
@@ -291,6 +292,7 @@ export default {
          vm.balance = response.data.balance
          vm.user = response.data.user 
          vm.super_user = response.data.super
+         vm.display_cab = response.data.cabinet
          localStorage.super_user = response.data.super
       })
     },
