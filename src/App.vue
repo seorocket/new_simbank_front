@@ -284,6 +284,8 @@ export default {
       axios.defaults.baseURL = 'https://simbank.pro/api'
       if (this.token) {
         axios.defaults.headers.common.Authorization = `Token ${this.token}`
+      }else{
+        axios.defaults.headers.common.Authorization = `Token ea6bc3080a093c78f5689dc0b7fdbac73e99d373`
       }
     },
     getBalance(){
