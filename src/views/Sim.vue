@@ -60,8 +60,8 @@
                     label="Активировать"
                     v-on:click="popup.activate_sim = true, popup.activate_sim_data.sim = props.row.name, getData('/goip/', 'data2')"
                 )
-                q-btn(size="sm" v-if="super_user == 'true'" round color="secondary" icon="edit" style="margin-right: 10px;" v-on:click="openEdit('add_sim', props.row)")
-                q-btn(size="sm" v-if="super_user == 'true'" round color="deep-orange" icon="delete" v-on:click="sumbit(`/sim/${props.row.pk}/`, '/sim/', 'data')")
+                q-btn(size="sm" round color="secondary" icon="edit" style="margin-right: 10px;" v-on:click="openEdit('add_sim', props.row)")
+                q-btn(size="sm" round color="deep-orange" icon="delete" v-on:click="sumbit(`/sim/${props.row.pk}/`, '/sim/', 'data')")
     q-select(
       v-model='masd'
       :options='masdo'
