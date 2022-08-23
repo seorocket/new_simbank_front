@@ -266,7 +266,7 @@ export default {
     getPageInfo () {
       const vm = this
       axios.get('/goip/').then(response => {
-        vm.goip_lines = response.data.message
+        vm.goip_lines = response.data
       }).catch(error => {
        if(error.response.status == 403){
          vm.showNotify('top-right', 'Пополните баланс!', 'negative')
