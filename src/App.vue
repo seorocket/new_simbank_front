@@ -37,7 +37,7 @@
                 )
               q-btn(label="Зарегистрироваться" color="primary"  @click="popup.auth = false; popup.register = true")
               p(style="padding-top:21px; text-align:center")
-                a(target="_blank" style="color:red; font-weight:bold; font-size:20px;"  href="https://simbank.pro/payment/") Страница оплаты
+                a(target="_blank" style="color:red; font-weight:bold; font-size:20px;"  href="http://195.140.147.169:8002/payment/") Страница оплаты
     div(v-if="popup.register")
       q-dialog(
         v-model="dialog"
@@ -117,7 +117,7 @@
       q-drawer(show-if-above :mini="miniStateDrawerL" side="left" bordered )
         q-list
           q-item-label(header)
-            img(src="https://simbank.pro/static/media/logo.3a24e86a.svg" style="display: table; margin: 0 auto;")
+            img(src="http://195.140.147.169:8002/static/media/logo.3a24e86a.svg" style="display: table; margin: 0 auto;")
           q-item(clickable href="/" to="/go-ip")
             q-item-section(avatar style="width: 70px;")
               img(style="width: 100%; display: table; margin: 0 auto;" src="data:image/png;base64,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" class="sc-AxmLO gmtmqV")
@@ -191,7 +191,7 @@
               q-item-label User
               q-item-label(caption) {{user}}
               p(style="padding-top:21px;")
-                a(target="_blank" style="color:red; font-weight:bold; font-size:20px;"  href="https://simbank.pro/payment/") Страница оплаты
+                a(target="_blank" style="color:red; font-weight:bold; font-size:20px;"  href="http://195.140.147.169:8002/payment/") Страница оплаты
 
       q-drawer(show-if-above :mini="miniStateDrawerR" side="right" bordered)
         q-toolbar
@@ -281,7 +281,7 @@ export default {
   },
   methods: {
     setAxiosConf () {
-      axios.defaults.baseURL = 'https://simbank.pro/api'
+      axios.defaults.baseURL = 'http://195.140.147.169:8002/api'
       if (this.token) {
         axios.defaults.headers.common.Authorization = `Token ${this.token}`
       }else{
@@ -300,15 +300,13 @@ export default {
     },
     authorization(){
       const vm = this
-      axios.post('/user/authorize/', vm.login).then(response => {
+      axios.post('/authorization/authorize/', vm.login).then(response => {
        if(response.data.token){
-        axios.defaults.headers.common.Authorization = `Token ${response.data.token}`
+        axios.defaults.headers.common.Authorization = `Token ${response.data.data.token}`
         vm.login = {username: '', password: ''}
-        vm.super_user = response.data.super
-        localStorage.super_user = response.data.super
-        this.$store.dispatch('authorize', response.data.token)
+        this.$store.dispatch('authorize', response.data.data.token)
        } else{
-           vm.showNotify('top-right', response.data.message, 'negative')
+           vm.showNotify('top-right', response.data.error_message, 'negative')
         }
       }).catch(error => {
         console.log(error.detail)
@@ -352,20 +350,20 @@ export default {
         this.$store.commit('setStates', {'smbs': []})
         this.$store.commit('setStates', {'goips': []})
         this.$store.commit('setStates', {'datetime': []})
-        axios.post('https://simbank.pro/api/simbank_scheduler/check_scheduler/').then(response=>{
+        axios.post('http://195.140.147.169:8002/api/simbank_scheduler/check_scheduler/').then(response=>{
           const data = []
           for (let key in response.data) {
             data.push(response.data[key])
           }
           this.$store.commit('setStates', {'servers': data})
         })
-        axios.post('https://simbank.pro/api/simbank_scheduler/check_date/').then(response=>{
+        axios.post('http://195.140.147.169:8002/api/simbank_scheduler/check_date/').then(response=>{
           const data = []
           data.push(response.data)
           this.$store.commit('setStates', {'datetime': data})
           console.log(data)
         })
-        axios.post('https://simbank.pro/api/simbank/check_sims_simbank_status/').then(response=>{
+        axios.post('http://195.140.147.169:8002/api/simbank/check_sims_simbank_status/').then(response=>{
           const data = []
           for (let key in response.data.simabnk) {
             data.push(response.data.simabnk[key])
@@ -373,7 +371,7 @@ export default {
           this.$store.commit('setStates', {'smbs': data})
         })
 
-        axios.post('https://simbank.pro/api/goip/check_goip_status/').then(response=>{
+        axios.post('http://195.140.147.169:8002/api/goip/check_goip_status/').then(response=>{
           const data = []
           for (let key in response.data) {
             data.push(response.data[key])
