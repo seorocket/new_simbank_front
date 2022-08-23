@@ -285,7 +285,7 @@ export default {
       if (this.token) {
         axios.defaults.headers.common.Authorization = `Token ${this.token}`
       }else{
-        axios.defaults.headers.common.Authorization = `Token ea6bc3080a093c78f5689dc0b7fdbac73e99d373`
+        axios.defaults.headers.common.Authorization = `Token da95c76b62eddb9abce6e7689484c09b0012ff62`
       }
     },
     getBalance(){
@@ -300,14 +300,14 @@ export default {
     },
     authorization(){
       const vm = this
-      axios.defaults.headers.common.Authorization = 'Token da95c76b62eddb9abce6e7689484c09b0012ff62'
+      axios.defaults.headers.common.Authorization = 'Token 69bb1e96bcbfc10cf17581010ec056662367b0ec'
       axios.post('/authorization/authorize/', vm.login).then(response => {
-       if(response.data.token){
-        axios.defaults.headers.common.Authorization = `Token ${response.data.data.token}`
-        vm.login = {username: '', password: ''}
-        this.$store.dispatch('authorize', response.data.data.token)
+       if(response.data.data.token){
+          axios.defaults.headers.common.Authorization = `Token ${response.data.data.token}`
+          vm.login = {username: '', password: ''}
+          this.$store.dispatch('authorize', response.data.data.token)
        } else{
-           vm.showNotify('top-right', response.data['error_message'], 'negative')
+          vm.showNotify('top-right', response.data['error_message'], 'negative')
         }
       }).catch(error => {
         console.log(error.detail)
