@@ -264,15 +264,10 @@ export default {
   },
   methods: {
     getPageInfo () {
-      const vm = this
-      axios.get('/goip/').then(response => {
-        vm.goip_lines = response.data.message
-      }).catch(error => {
-       if(error.response.status == 403){
-         vm.showNotify('top-right', 'Пополните баланс!', 'negative')
-         vm.$store.dispatch('authorize', '')
-        }
-       })
+      // const vm = this
+      // vm.$http.get('/goip/').then(response => {
+      //   vm.goip_lines = response.data.message
+      // })
     },
     removeSIM (sim) {
         const vm = this
@@ -331,9 +326,6 @@ export default {
   },
   beforeMount () {
     this.getPageInfo()
-   window.timeout = setInterval(() =>
-      this.getPageInfo()
-    , 10000)
   }
 }
 </script>

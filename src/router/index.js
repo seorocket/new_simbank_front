@@ -25,14 +25,6 @@ const routes = [
     component: Goip
   },
   {
-    path: '/go-ip',
-    name: 'Main',
-    icon: 'source',
-    text: 'GOIP',
-    show: true,
-    component: Goip
-  },
-  {
     path: '/sim-list',
     name: 'Sim',
     icon: 'source',
