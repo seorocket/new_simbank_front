@@ -300,7 +300,6 @@ export default {
     },
     authorization(){
       const vm = this
-      axios.defaults.headers.common.Authorization = 'Token 69bb1e96bcbfc10cf17581010ec056662367b0ec'
       axios.post('/authorization/authorize/', vm.login).then(response => {
        if(response.data.data.token){
           axios.defaults.headers.common.Authorization = `Token ${response.data.data.token}`
