@@ -300,16 +300,17 @@ export default {
     },
     authorization(){
       const vm = this
-      axios.post('/authorization/authorize/', vm.login).then(response => {
-       if(response.data.data.token){
-          axios.defaults.headers.common.Authorization = `Token ${response.data.data.token}`
+      axios.post('/user/authorize/', vm.login).then(response => {
+        console.log(response.data.token)
+       if(response.data.token){
+          axios.defaults.headers.common.Authorization = `Token ${response.data.token}`
           vm.login = {username: '', password: ''}
-          this.$store.dispatch('authorize', response.data.data.token)
+          this.$store.dispatch('authorize', response.data.token)
        } else{
           vm.showNotify('top-right', response.data['error_message'], 'negative')
         }
       }).catch(error => {
-        console.log(error.detail)
+        console.log(error)
         vm.showNotify('top-right', 'Не верный логин или пароль', 'negative')
       })
     },
