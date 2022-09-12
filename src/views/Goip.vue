@@ -150,6 +150,13 @@
               stack-label
               style="width: 100%; margin-bottom: 10px"
             )
+            q-select(
+              outlined
+              label="Выбрать команду"
+              v-model="ussd"
+              :options="ussd_commands"
+              style="width: 100%; margin-bottom: 10px"
+            )
             q-btn(
               flat
               label="Продолжить"
@@ -223,6 +230,10 @@ export default {
   data () {
     return {
       submitting: false,
+      ussd: '',
+      ussd_commands: [
+        '*101# - узнать баланс'
+      ],
       popup: {
         sendUSSD: false,
         sendUSSD_data: {
@@ -260,6 +271,14 @@ export default {
       },
       goip_settings: [],
       goip_lines: []
+    }
+  },
+  watch: {
+    'ussd' (event) {
+      const vm = this
+      if (event !== '') {
+        vm.popup.sendUSSD_data.command = vm.ussd.split(' ')[0]
+      }
     }
   },
   methods: {
@@ -308,7 +327,7 @@ export default {
         axios.post('/goip/send_sms/', {'phone': vm.popup.sendSms_data.phone, 'goip_id': vm.popup.sendSms_data.line_id, 'msg': vm.popup.sendSms_data.command}).then(response => {
           if(response.data.message == 'Сообщение отправлено'){
              vm.showNotify('top-right', response.data.message, 'positive')
-          }else{
+          } else {
             vm.showNotify('top-right', response.data.message, 'negative')
           }
           vm.popup.sendSms = false

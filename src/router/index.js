@@ -26,7 +26,7 @@ const routes = [
   },
   {
     path: '/go-ip',
-    name: 'Main',
+    name: 'goip',
     icon: 'source',
     text: 'GOIP',
     show: true,
