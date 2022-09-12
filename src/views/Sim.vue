@@ -44,6 +44,7 @@
             q-td(key="slot" :props="props" v-html="props.row.slot")
             q-td(key="name" :props="props")
               <img :src="props.row.operator_image" style="position: relative; top: 2px; right: 3px;"> {{ props.row.name }}
+            q-td(key="tarif" :props="props" v-html="props.row.tarif")
             q-td(key="pk" :props="props")
                 button(v-on:click="getTaskSms(props.row.pk)") Посмотреть
             q-td(key="pay_operation" :props="props")
@@ -193,6 +194,15 @@
               stack-label
               style="width: 100%; margin-bottom: 10px"
             )
+            q-input(
+              v-model="popup.add_sim_data.tarif"
+              label="Описание Sim карты"
+              type="text"
+              lazy-rules
+              outlined
+              stack-label
+              style="width: 100%; margin-bottom: 10px"
+            )
             q-btn(
               flat
               label="Создать"
@@ -250,6 +260,13 @@ export default {
           sortable: true
         },
         {
+          name: 'tarif',
+          field: 'tarif',
+          label: 'Описание',
+          align: 'left',
+          sortable: true
+        },
+        {
           name: 'pk',
           label: 'Последние входящие СМС',
           align: 'center',
@@ -303,6 +320,7 @@ export default {
           bank: "",
           name: "",
           operator: "",
+          tarif: "",
           pay_operation: {'label': 'Нет', 'value': 0},
           services_id: [],
           sim_id: null,
