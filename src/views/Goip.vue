@@ -232,7 +232,11 @@ export default {
       submitting: false,
       ussd: '',
       ussd_commands: [
-        '*101# - узнать баланс'
+        '*102# - Beeline, Megafon баланс',
+        '*100# - МТС баланс',
+        '*205# - Megafon узнать номер',
+        '*110*10# - Beeline узнать номер',
+        '*111*0887# - MTS узнать номер'
       ],
       popup: {
         sendUSSD: false,

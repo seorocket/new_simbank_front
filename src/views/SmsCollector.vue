@@ -317,11 +317,13 @@ export default {
     deleteSMS () {
         const vm = this
         axios.post('/sim/delete_all_sms/').then(response => {
+          console.log(response.data)
           if (response.data.result) {
             vm.showNotify('top-right', 'СМС удалены', 'success')
             vm.popup.delete_sms = false
           }
         }).catch(error => {
+          console.log('666')
           if(error.response.status == 403){
             vm.showNotify('top-right', 'Пополните баланс!', 'negative')
             vm.$store.dispatch('authorize', '')
