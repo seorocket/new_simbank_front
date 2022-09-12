@@ -281,11 +281,11 @@ export default {
   },
   methods: {
     setAxiosConf () {
-      axios.defaults.baseURL = 'http://195.140.147.169:8002/api'
+      axios.defaults.baseURL = 'http://185.136.185.202/api'
       if (this.token) {
         axios.defaults.headers.common.Authorization = `Token ${this.token}`
       }else{
-        axios.defaults.headers.common.Authorization = `Token da95c76b62eddb9abce6e7689484c09b0012ff62`
+        axios.defaults.headers.common.Authorization = `Token be68928f099f3e55c180092b38dab11fc3686d16`
       }
     },
     getBalance(){
