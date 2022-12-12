@@ -1,7 +1,44 @@
 
 <template lang="pug">
   div
-    q-layout(view="lHh lpR lff")
+    div(v-if="!token")
+      q-dialog(
+        v-model="dialog"
+        persistent
+        )
+        q-card
+          q-card-section(class="row items-center")
+            span(class="q-ml-sm text-h6") Авторизация
+          q-card-section(class="row items-center")
+            form(@submit.prevent="authorization()" method="post" id="login" style="min-width: 400px")
+              q-input(
+                v-model="login.username"
+                label="Логин"
+                type="text"
+                lazy-rules
+                outlined
+                stack-label
+                style="width: 100%; margin-bottom: 10px"
+              )
+              q-input(
+                outlined
+                v-model="login.password"
+                hint=""
+                type="password"
+                label="Пароль"
+                stack-label
+                style="width: 100%"
+              )
+              q-btn(
+                flat
+                label="Войти"
+                color="primary"
+                type="submit"
+                )
+              //q-btn(label="Зарегистрироваться" color="primary"  @click="popup.auth = false; popup.register = true")
+              p(style="padding-top:21px; text-align:center")
+                a(target="_blank" style="color:red; font-weight:bold; font-size:20px;"  href="https://simbank.pro/payment/") Страница оплаты
+    q-layout(view="lHh lpR lff" v-else)
       q-header(elevated class="bg-primary text-white" height-hint="98")
         q-toolbar
           q-btn(dense flat round icon="menu" class="mobile-hide"  @click="$store.commit('turnLeftDrawer', 'miniStateDrawerL')")
@@ -19,7 +56,7 @@
             v-bind:caption="item.caption"
             v-bind:css="item.css"
            )
-      q-page-container(style="padding-right: 15px;")
+      q-page-container(style="padding-right: 15px; margin-left: 15px; padding-top: 65px;")
         router-view
 </template>
 
@@ -27,22 +64,7 @@
 import axios from 'axios'
 import { mapState } from 'vuex'
 import LeftMenuLink from '@/components/LeftMenuLink.vue'
-import Vue from "vue";
 
-let Requests = axios.create({
-  baseURL: "https://simbank.pro/api",
-});
-
-Requests.interceptors.response.use(
-(response) => {
-  return {code: response.status, data: response.data}
-},
-(error) => {
-  return {code: error.response.status, data: error.response.data}
-});
-
-
-Vue.prototype.$http = Requests
 
 export default {
   meta: {
@@ -82,12 +104,30 @@ export default {
           link: 'settings',
           css: ''
         },
-      ]
+      ],
+      dialog: true,
+      login: {
+        username: '',
+        password: ''
+      }
     }
   },
   created () {
-    this.$http.get('/').then(response => {
-        console.log(response)
+    axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
+    if (this.token) {
+      axios.defaults.headers.common.Authorization = `Token ${this.token}`
+    }
+
+    axios.interceptors.response.use(
+    (response) => {
+      return {code: response.status, data: response.data}
+    },
+    (error) => {
+      const vm = this
+      if (error.response.status === 401) {
+        vm.$store.dispatch('authorize', '')
+      }
+      return {code: error.response.status, data: error.response.data}
     })
   },
   computed: {
@@ -109,6 +149,26 @@ export default {
         actions: [
           { label: 'Скрыть', color: 'white', handler: () => { /* ... */ } }
         ]
+      })
+    },
+    logOut () {
+      const vm = this
+      vm.$store.dispatch('authorize', '')
+      location.reload()
+    },
+    authorization() {
+      const vm = this
+      axios.post('/authorize/', vm.login).then(response => {
+        if (response.data.data.token) {
+          axios.defaults.headers.common.Authorization = `Token ${response.data.data.token}`
+          vm.login = {username: '', password: ''}
+          this.$store.dispatch('authorize', response.data.data)
+        } else {
+          vm.showNotify('top-right', response.data.message, 'negative')
+        }
+      }).catch(error => {
+        console.log(error.detail)
+        vm.showNotify('top-right', 'Не верный логин или пароль', 'negative')
       })
     }
   },

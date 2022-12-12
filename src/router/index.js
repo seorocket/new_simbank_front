@@ -25,6 +25,14 @@ const routes = [
     component: Goip
   },
   {
+    path: '/go-ip',
+    name: 'Main',
+    icon: 'source',
+    text: 'GOIP',
+    show: true,
+    component: Goip
+  },
+  {
     path: '/sim-list',
     name: 'Sim',
     icon: 'source',
@@ -119,7 +127,7 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-   if(to.name != 'Get SMS' || to.name != 'Main'){
+   if(to.name !== 'Get SMS' || to.name !== 'Main'){
      clearInterval(window.timeout);
    }
    next()

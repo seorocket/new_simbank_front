@@ -1,138 +1,34 @@
 <template lang="pug">
   div
-    table.table
-      thead
-        tr
-          th ID Линии
-          th Авторизация
-          th GSM Статус
-          th Оператор / Номер
-          th Сигнал
-          th SIM ID
-          th IMEI
-          th Действие
-      tbody
-        tr(v-for="g in goip_lines")
-          td {{ g.line_id }}
-          td
-            div.green_circle(v-if="g.login === 'ONLINE' || g.login === 'IDLE'")
-            div.red_circle(v-else)
-          td
-            div.green_circle(v-if="g.gsm_status === 'LOGIN'")
-            div.red_circle(v-else)
-          td 
-            template(v-if="g.phone_number")
-              img(:src="g.operator_instance.image_path" style="position: relative; top: 3px;")
-              | {{g.operator}} / {{ g.phone_number }}
-          td {{ g.signal }}
-          td(v-html=" g.sim_id ? g.sim_id : '-'")
-          td {{ g.imei }}
-          td
-            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="Отправить СМС" style="margin-right: 10px;" @click="popup.sendSms = true; popup.sendSms_data.line_id = g.line_id")
-            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="USSD" style="margin-right: 10px;" @click="popup.sendUSSD = true; popup.sendUSSD_data.line_id = g.line_id")
-            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="Узнать номер" style="margin-right: 10px;" @click="getSimNumber(g.sim_id,g.line_id,g.operator)")
-            q-btn(v-if="g.sim_id" size="xs" color="secondary" label="Отключить" style="margin-right: 10px;" @click="removeSIM(g.sim_id)")
+    q-card
+      q-card-actions
+        q-card-section(style="width: 100%")
+          q-table(
+            :data="goip_lines"
+            :columns="columns"
+            v-slot:body="props"
+            hide-bottom
+            :rows-per-page-options="[0]"
+          )
+            q-tr
+              q-td(key="line_id" :props="props") {{ props.row.line_id }}
+              q-td(key="login" :props="props")
+                div.green_circle(v-if="props.row.login === 'ONLINE' || props.row.login === 'IDLE'")
+                div.red_circle(v-else)
+              q-td(key="gsm_status" :props="props")
+                div.green_circle(v-if="props.row.gsm_status === 'LOGIN'")
+                div.red_circle(v-else)
+              q-td(key="phone_number" :props="props")
+                template(v-if="props.row.phone_number")
+                  | {{ props.row.operator }} / {{ props.row.phone_number }}
+              q-td(key="signal" :props="props") {{ props.row.signal }}
+              q-td(key="sim_id" :props="props" v-html="props.row.sim_id ? props.row.sim_id : '-'")
+              q-td(key="imei" :props="props") {{ props.row.imei }}
+              q-td(key="action" :props="props")
+                q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="Отправить СМС" style="margin-right: 10px;" @click="popup.sendSms = true; popup.sendSms_data.line_id = props.row.line_id")
+                q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="USSD" style="margin-right: 10px;" @click="popup.sendUSSD = true; popup.sendUSSD_data.line_id = props.row.line_id")
+                q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="Отключить" style="margin-right: 10px;" @click="removeSIM(props.row.sim_id)")
 
-
-    q-dialog(
-      v-model="popup.add_goip"
-      persistent
-      )
-      q-card
-        q-card-section(class="row items-center")
-          span(class="q-ml-sm text-h6") Добавить GOIP
-        q-card-section(class="row items-center")
-            q-input(
-              v-model="popup.add_goip_data.name"
-              label="Название GOIP"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-select(
-              outlined
-              v-model="popup.add_goip_data.sheduler" 
-              :options="settings.sheduler" 
-              label="Укажите Sheduler" 
-              stack-label 
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-input(
-              v-model="popup.add_goip_data.goip_id"
-              label="Укажите ID GOIP"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-input(
-              v-model="popup.add_goip_data.server_password"
-              label="Укажите пароль GOIP для сервера"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-select(
-              outlined
-              v-model="popup.add_goip_data.goip_slots" 
-              :options="settings.goip_slots" 
-              label="Укажите тип GOIP" 
-              stack-label 
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-input(
-              v-model="popup.add_goip_data.url"
-              label="Укажите url от GOIP"
-              type="text"
-              placeholder="http://9.9.9.9:4441"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-input(
-              v-model="popup.add_goip_data.login"
-              label="Логин от GOIP"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-input(
-              v-model="popup.add_goip_data.password"
-              label="Пароль от GOIP"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-input(
-              v-model="popup.add_goip_data.url_sms_service"
-              label="URL от SMS сервиса"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-btn(
-              flat
-              label="Продолжить"
-              color="primary"
-              )
-            q-btn(
-              flat
-              label="Отмена"
-              color="primary"
-              v-on:click="popup.add_goip = false"
-              )
     q-dialog(
       v-model="popup.sendUSSD"
       persistent
@@ -223,6 +119,63 @@ export default {
   data () {
     return {
       submitting: false,
+      columns: [
+        {
+          name: 'line_id',
+          label: 'ID линии',
+          align: 'center',
+          field: 'line_id',
+          headerStyle: 'width: 5%'
+        },
+        {
+          name: 'login',
+          label: 'Авторизация',
+          align: 'center',
+          field: 'login',
+          headerStyle: 'width: 5%'
+        },
+        {
+          name: 'gsm_status',
+          label: 'GSM Статус',
+          align: 'center',
+          field: 'gsm_status',
+          headerStyle: 'width: 5%'
+        },
+        {
+          name: 'phone_number',
+          label: 'Оператор / Номер',
+          align: 'center',
+          field: 'phone_number',
+          headerStyle: 'width: 20%'
+        },
+        {
+          name: 'signal',
+          label: 'Сигнал',
+          align: 'center',
+          field: 'signal',
+          headerStyle: 'width: 5%'
+        },
+        {
+          name: 'sim_id',
+          label: 'SIM ID',
+          align: 'center',
+          field: 'sim_id',
+          headerStyle: 'width: 5%'
+        },
+        {
+          name: 'imei',
+          label: 'IMEI',
+          align: 'center',
+          field: 'imei',
+          headerStyle: 'width: 15%'
+        },
+        {
+          name: 'action',
+          label: 'Действия',
+          align: 'center',
+          headerStyle: 'width: 40%'
+        }
+      ],
       popup: {
         sendUSSD: false,
         sendUSSD_data: {
@@ -234,56 +187,26 @@ export default {
           line_id: '',
           command: '',
           phone: ''
-        },
-        add_goip: false,
-        add_goip_data: {
-          name: '',
-          sheduler: {'label':'onec', 'value': 1},
-          goip_id: '',
-          server_password: '',
-          goip_slots:'',
-          url: '',
-          login: '',
-          password: '',
-          url_sms_service: ''
-        },
+        }
       },
-      settings: {
-        sheduler: [{'label':'onec', 'value': 1}],
-        goip_slots: [
-          {'label': '1', 'value': '1'},
-          {'label': '4', 'value': '4'},
-          {'label': '8', 'value': '8'},
-          {'label': '16', 'value': '16'},
-          {'label': '32', 'value': '32'}
-        ]
-      },
-      goip_settings: [],
       goip_lines: []
     }
   },
   methods: {
     getPageInfo () {
-      // const vm = this
-      // vm.$http.get('/goip/').then(response => {
-      //   vm.goip_lines = response.data.message
-      // })
+      const vm = this
+      axios.get('/gateway/state/').then(response => {
+        vm.goip_lines = response.data
+      })
     },
     removeSIM (sim) {
-        const vm = this
-        axios.post('/sim/remove_sim_on_goip/', {'sim': sim}).then(response => {
-          if (response.data.message === 'ok') {
-            vm.getPageInfo()
-            vm.showNotify('top-right', 'Сим-карта успешно извлечена!', 'positive')
-          }
-        })
-    },
-    getSimNumber (sim, goip, operator) {
-        const vm = this
-        axios.post('/goip/send_ussd_phone/', {'sim_id': sim, 'goip_id': goip, 'operator': operator}).then(response => {
+      const vm = this
+      axios.post('/sim/remove_sim_on_goip/', {'sim': sim}).then(response => {
+        if (response.data.message === 'ok') {
           vm.getPageInfo()
-          vm.showNotify('top-right', response.data, 'positive')
-        })
+          vm.showNotify('top-right', 'Сим-карта успешно извлечена!', 'positive')
+        }
+      })
     },
     sendUSSD () {
       const vm = this
@@ -301,9 +224,9 @@ export default {
       if (!vm.submitting) {
         vm.submitting = true
         axios.post('/goip/send_sms/', {'phone': vm.popup.sendSms_data.phone, 'goip_id': vm.popup.sendSms_data.line_id, 'msg': vm.popup.sendSms_data.command}).then(response => {
-          if(response.data.message == 'Сообщение отправлено'){
+          if (response.data.message === 'Сообщение отправлено') {
              vm.showNotify('top-right', response.data.message, 'positive')
-          }else{
+          } else {
             vm.showNotify('top-right', response.data.message, 'negative')
           }
           vm.popup.sendSms = false
@@ -330,39 +253,11 @@ export default {
 }
 </script>
 <style scoped>
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+  .q-table thead tr, .q-table tbody td {
+    height: 32px;
   }
-  .table th {
-    font-weight: normal;
-    font-size: 15px;
-    text-transform: uppercase;
-    background: #e6e3da;
-    padding: 10px;
-  }
-  .table tbody tr td, .table tbody tr th {
-    text-align: center;
-    padding: 5px 8px;
-    border-bottom: 1px solid #ddd;
-  }
-  .table tbody tr:nth-child(even) td{
+  .q-table tbody tr:nth-child(odd) td{
     background: #eee;
-  }
-  .page_title_divider {
-    text-align: center;
-    min-width: 1px;
-    max-width: 100%;
-    font-size: 21px;
-    font-weight: normal;
-    letter-spacing: 0.01em;
-    color: #fff;
-    background: #027BE3;
-    line-height: 50px;
-    opacity: 0.9;
-    box-shadow: 0 2px 8px -3px rgb(0 0 0);
-    margin: 20px 0;
   }
   .green_circle {
     width: 15px;

@@ -21,15 +21,15 @@ export default new Vuex.Store({
       state[item] = !state[item]
     },
     authorize (state, data) {
-      state.token = data
+      state.token = data.token
     },
     setStates (state, data) {
       state.states = {...state.states, ...data} 
     }
   },
   actions: {
-    authorize({ commit }, str) {
-      commit('authorize', str)
+    authorize({ commit }, data) {
+      commit('authorize', data)
     }
   },
   modules: {
