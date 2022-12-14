@@ -4,7 +4,7 @@
       q-card-actions
         q-card-section(style="width: 100%")
           q-table(
-            :data="goip_lines"
+            :data="model.gateway_lines.data"
             :columns="columns"
             v-slot:body="props"
             hide-bottom
@@ -27,7 +27,7 @@
               q-td(key="action" :props="props")
                 q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="Отправить СМС" style="margin-right: 10px;" @click="popup.sendSms = true; popup.sendSms_data.line_id = props.row.line_id")
                 q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="USSD" style="margin-right: 10px;" @click="popup.sendUSSD = true; popup.sendUSSD_data.line_id = props.row.line_id")
-                q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="Отключить" style="margin-right: 10px;" @click="removeSIM(props.row.sim_id)")
+                q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="Отключить" style="margin-right: 10px;" @click="removeSIM(props.row.id)")
 
     q-dialog(
       v-model="popup.sendUSSD"
@@ -111,8 +111,10 @@
 
 <script>
 import axios from 'axios'
+import mixins from "../plugins/general";
 
 export default {
+  mixins: [mixins],
   meta: {
     title: 'GOIP - Линии'
   },
@@ -188,25 +190,13 @@ export default {
           command: '',
           phone: ''
         }
-      },
-      goip_lines: []
+      }
     }
   },
   methods: {
-    getPageInfo () {
-      const vm = this
-      axios.get('/gateway/state/').then(response => {
-        vm.goip_lines = response.data
-      })
-    },
     removeSIM (sim) {
       const vm = this
-      axios.post('/sim/remove_sim_on_goip/', {'sim': sim}).then(response => {
-        if (response.data.message === 'ok') {
-          vm.getPageInfo()
-          vm.showNotify('top-right', 'Сим-карта успешно извлечена!', 'positive')
-        }
-      })
+      vm.actionRequest(`/sim/${sim}/activate_sim/`, {}, 'gateway_lines')
     },
     sendUSSD () {
       const vm = this
@@ -248,7 +238,7 @@ export default {
     }
   },
   beforeMount () {
-    this.getPageInfo()
+    this.getData('gateway_lines')
   }
 }
 </script>

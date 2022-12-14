@@ -197,14 +197,8 @@ export default {
     activateSim() {
       const vm = this
       const data = vm.popup.activate_sim.scheme
-      console.log(data)
-      axios.post(`/sim/${data.sim.value}/activate_sim/`, {'line_id': data.line_id.value.value}).then(response => {
-        if (response.status === 200) {
-          vm.showNotify('top-right', `Sim карта активирована`, 'positive')
-        } else {
-          vm.showNotify('top-right', 'Ошибка', 'negative')
-        }
-      })
+      vm.actionRequest(`/sim/${data.sim.value}/activate_sim/`, {'line_id': data.line_id.value.value})
+      vm.popup.active = vm.popup['activate_sim'].active = false
     }
   },
   watch: {

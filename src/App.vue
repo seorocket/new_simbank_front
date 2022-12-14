@@ -120,14 +120,14 @@ export default {
 
     axios.interceptors.response.use(
     (response) => {
-      return {code: response.status, data: response.data}
+      return {code: response.status, data: response.data, message: response.data.response_message}
     },
     (error) => {
       const vm = this
       if (error.response.status === 401) {
         vm.$store.dispatch('authorize', '')
       }
-      return {code: error.response.status, data: error.response.data}
+      return {code: error.response.status, data: error.response.data, message: error.response.data.response_message}
     })
   },
   computed: {
@@ -167,8 +167,8 @@ export default {
           vm.showNotify('top-right', response.data.message, 'negative')
         }
       }).catch(error => {
-        console.log(error.detail)
-        vm.showNotify('top-right', 'Не верный логин или пароль', 'negative')
+        console.log(error)
+        vm.showNotify('top-right', 'ошибка авторизации', 'negative')
       })
     }
   },

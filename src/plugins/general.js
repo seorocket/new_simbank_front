@@ -161,6 +161,19 @@ const mixins = {
                 timeout: 3000
             })
         },
+        actionRequest(url, data, callback = '') {
+            const vm = this
+            axios.post(url, data).then(response => {
+                vm.showNotify(
+                    'top-right',
+                    response.message,
+                    response.code === 200 ? 'positive' : 'negative'
+                )
+                if (callback) {
+                    vm.getData(callback)
+                }
+            })
+        },
         getData(type, params) {
             const vm = this
             const url = params ? `${vm.model[type].url}?${params}` : vm.model[type].url
