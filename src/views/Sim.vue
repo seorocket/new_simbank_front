@@ -43,7 +43,7 @@
             q-td(key="status" align="center")
               div.green_circle(v-if="props.row.status === true")
               div.red_circle(v-else)
-            q-td(key="goip_id" :props="props" v-html="props.row.goip_id")
+            q-td(key="smb_slot" :props="props" v-html="props.row.smb_slot")
             q-td(key="name" :props="props")
               <img :src="props.row.operator_image" style="position: relative; top: 2px; right: 3px;"> {{ props.row.name }}
             q-td(key="imei" :props="props") -
@@ -80,7 +80,7 @@
       <!-- Активация сим -->
       PopupActivateSim(
         title="Активировать SIM-карту"
-        :submit="activateSim"
+        :submit="actionRequest"
         :data="popup.activate_sim"
         model="activate_sim"
         :settings="settings"
@@ -91,7 +91,6 @@
 
 <script>
 import axios from 'axios'
-import {mapState} from "vuex"
 import mixins from "../plugins/general"
 import PopupCreateUpdate from "../components/PopupCreateUpdate"
 import PopupActivateSim from "../components/PopupActivateSim"
@@ -116,8 +115,8 @@ export default {
           field: 'status'
         },
         {
-          name: 'goip_id',
-          field: 'goip_id',
+          name: 'smb_slot',
+          field: 'smb_slot',
           label: 'Слот в Sim-Банке',
           align: 'center',
           sortable: true
@@ -148,16 +147,8 @@ export default {
           align: 'center',
           sortable: false
         }
-      ],
-      task: {
-        sms: [],
-      }
+      ]
     }
-  },
-  computed: {
-    ...mapState([
-      'token'
-    ])
   },
   methods: {
     massDeleteSim() {
@@ -193,12 +184,6 @@ export default {
       vm.getData('gateway_lines')
       vm.popup.active = vm.popup[type].active = true
       vm.popup[type].scheme.sim.value = id
-    },
-    activateSim() {
-      const vm = this
-      const data = vm.popup.activate_sim.scheme
-      vm.actionRequest(`/sim/${data.sim.value}/activate_sim/`, {'line_id': data.line_id.value.value})
-      vm.popup.active = vm.popup['activate_sim'].active = false
     }
   },
   watch: {

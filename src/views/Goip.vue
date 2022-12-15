@@ -25,96 +25,65 @@
               q-td(key="sim_id" :props="props" v-html="props.row.sim_id ? props.row.sim_id : '-'")
               q-td(key="imei" :props="props") {{ props.row.imei }}
               q-td(key="action" :props="props")
-                q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="Отправить СМС" style="margin-right: 10px;" @click="popup.sendSms = true; popup.sendSms_data.line_id = props.row.line_id")
-                q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="USSD" style="margin-right: 10px;" @click="popup.sendUSSD = true; popup.sendUSSD_data.line_id = props.row.line_id")
-                q-btn(v-if="props.row.sim_id" size="xs" color="secondary" label="Отключить" style="margin-right: 10px;" @click="removeSIM(props.row.id)")
-
+                q-btn(
+                  v-if="props.row.id"
+                  size="xs"
+                  color="secondary"
+                  label="Отправить СМС"
+                  style="margin-right: 10px;"
+                  @click="openSendSms('send_sms', {line: props.row.line_id, id: props.row.id})"
+                )
+                q-btn(
+                  v-if="props.row.id"
+                  size="xs"
+                  color="secondary"
+                  label="USSD"
+                  style="margin-right: 10px;"
+                  @click="openSendUssd('send_ussd', {line: props.row.line_id, sim: props.row.id})"
+                )
+                q-btn(
+                  v-if="props.row.id"
+                  size="xs"
+                  color="secondary"
+                  label="Отключить"
+                  style="margin-right: 10px;"
+                  @click="removeSIM(props.row.id)"
+                )
+    <!-- popups -->
     q-dialog(
-      v-model="popup.sendUSSD"
+      v-model="popup.active"
       persistent
       )
-      q-card
-        q-card-section(class="row items-center")
-          span(class="q-ml-sm text-h6") Отправить USSD команду
-        q-card-section(class="row items-center")
-            q-input(
-              v-model="popup.sendUSSD_data.command"
-              label="USSD команда"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-btn(
-              flat
-              label="Продолжить"
-              color="primary"
-              type="submit"
-              :loading="submitting"
-              v-on:click="sendUSSD()"
-              )
-              template(v-slot:loading)
-                q-spinner-facebook
-
-            q-btn(
-              flat
-              label="Отмена"
-              color="primary"
-              v-on:click="popup.sendUSSD = false"
-              )
-    q-dialog(
-      v-model="popup.sendSms"
-      persistent
+      <!-- send USSD -->
+      PopupSendUssd(
+        title="Отправить USSD"
+        :submit="actionRequest"
+        :data="popup.send_ussd"
+        model="send_ussd"
+        :settings="settings"
+        @close="closePopup"
       )
-      q-card
-        q-card-section(class="row items-center")
-          span(class="q-ml-sm text-h6") Отправить SMS
-        q-card-section(class="row items-center")
-            q-input(
-              v-model="popup.sendSms_data.phone"
-              label="На какой номер отправить?"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-input(
-              v-model="popup.sendSms_data.command"
-              label="SMS сообщение"
-              type="text"
-              lazy-rules
-              outlined
-              stack-label
-              style="width: 100%; margin-bottom: 10px"
-            )
-            q-btn(
-              flat
-              label="Продолжить"
-              color="primary"
-              type="submit"
-              :loading="submitting"
-              v-on:click="sendSms()"
-              )
-              template(v-slot:loading)
-                q-spinner-facebook
-
-            q-btn(
-              flat
-              label="Отмена"
-              color="primary"
-              v-on:click="popup.sendSms = false"
-              )
-
+      PopupSendSms(
+        title="Отправить СМС"
+        :submit="actionRequest"
+        :data="popup.send_sms"
+        model="send_sms"
+        :settings="settings"
+        @close="closePopup"
+      )
 </template>
 
 <script>
-import axios from 'axios'
 import mixins from "../plugins/general";
+import PopupSendUssd from "../components/PopupSendUssd";
+import PopupSendSms from "../components/PopupSendSms";
 
 export default {
   mixins: [mixins],
+  components: {
+    PopupSendUssd,
+    PopupSendSms
+  },
   meta: {
     title: 'GOIP - Линии'
   },
@@ -177,64 +146,27 @@ export default {
           align: 'center',
           headerStyle: 'width: 40%'
         }
-      ],
-      popup: {
-        sendUSSD: false,
-        sendUSSD_data: {
-          line_id: '',
-          command: ''
-        },
-        sendSms: false,
-        sendSms_data: {
-          line_id: '',
-          command: '',
-          phone: ''
-        }
-      }
+      ]
     }
   },
   methods: {
     removeSIM (sim) {
       const vm = this
-      vm.actionRequest(`/sim/${sim}/activate_sim/`, {}, 'gateway_lines')
+      vm.actionRequest(`/sim/${sim}/activate_sim/`, {}, '', 'gateway_lines')
     },
-    sendUSSD () {
+    openSendUssd (type, data) {
       const vm = this
-      if (!vm.submitting) {
-        vm.submitting = true
-        axios.post('/goip/send_ussd/', {'goip_id': vm.popup.sendUSSD_data.line_id, 'msg': vm.popup.sendUSSD_data.command}).then(response => {
-          vm.showNotify('top-right', response.data, 'positive')
-          vm.popup.sendUSSD = false
-          vm.submitting = false
-        })
-      }
+      vm.getData('gateway_lines')
+      vm.popup.active = vm.popup[type].active = true
+      vm.popup[type].scheme.line_id.value = data.line
+      vm.popup[type].scheme.sim.value = data.sim
     },
-    sendSms () {
+    openSendSms (type, data) {
       const vm = this
-      if (!vm.submitting) {
-        vm.submitting = true
-        axios.post('/goip/send_sms/', {'phone': vm.popup.sendSms_data.phone, 'goip_id': vm.popup.sendSms_data.line_id, 'msg': vm.popup.sendSms_data.command}).then(response => {
-          if (response.data.message === 'Сообщение отправлено') {
-             vm.showNotify('top-right', response.data.message, 'positive')
-          } else {
-            vm.showNotify('top-right', response.data.message, 'negative')
-          }
-          vm.popup.sendSms = false
-          vm.submitting = false
-        })
-      }
-    },
-    showNotify (position, message, color) {
-      this.$q.notify({
-        color: color, 
-        textColor: 'white', 
-        message: message, 
-        position: position,
-        timeout: 0,
-        actions: [
-          { label: 'Скрыть', color: 'white', handler: () => { /* ... */ } }
-        ]
-      })
+      vm.getData('gateway_lines')
+      vm.popup.active = vm.popup[type].active = true
+      vm.popup[type].scheme.line_id.value = data.line
+      vm.popup[type].scheme.sim.value = data.id
     }
   },
   beforeMount () {

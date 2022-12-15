@@ -1,7 +1,7 @@
 <template lang="pug">
   q-card(v-if="data.active")
     q-card-section(class="row items-center")
-      span(class="q-ml-sm text-h6") {{ title }} - {{ data.scheme.sim.value }}
+      span(class="q-ml-sm text-h6") {{ title }} с номера
     q-card-section(class="row items-center")
       template(v-for="field in data.scheme")
         q-select(
@@ -25,22 +25,25 @@
         )
       q-btn(
         flat
-        label="Активировать"
+        :loading="data.submitting"
+        label="Отправить"
         color="secondary"
-        @click="submit(`/sim/${data.scheme.sim.value}/activate_sim/`, data.scheme, 'activate_sim', 'sim')"
-        )
+        @click="submit(`/sim/${data.scheme.sim.value}/send_ussd/`, data.scheme, 'send_ussd')"
+      )
+        template(v-slot:loading)
+          q-spinner-facebook
       q-btn(
         flat
         label="Отмена"
         color="primary"
         v-on:click="$emit('close', model)"
-        )
+      )
 </template>
 
 <script>
 
 export default {
-  name: "PopupActivateSim",
+  name: "PopupSendUssd",
   props: ['title', 'submit', 'model', 'data', 'settings'],
   data() {
     return {}

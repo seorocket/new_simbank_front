@@ -82,29 +82,46 @@ const mixins = {
             popup: {
                 active: false,
                 gateway: {
+                    submitting: false,
                     active: false,
                     update: 0,
                     scheme: JSON.parse(JSON.stringify(schemes.gateway))
                 },
                 smb: {
+                    submitting: false,
                     active: false,
                     update: 0,
                     scheme: JSON.parse(JSON.stringify(schemes.smb))
                 },
                 smb_server: {
+                    submitting: false,
                     active: false,
                     update: 0,
                     scheme: JSON.parse(JSON.stringify(schemes.smb_server))
                 },
                 sim: {
+                    submitting: false,
                     active: false,
                     update: 0,
                     scheme: JSON.parse(JSON.stringify(schemes.sim))
                 },
                 activate_sim: {
+                    submitting: false,
                     active: false,
                     update: 0,
                     scheme: JSON.parse(JSON.stringify(schemes.activate_sim))
+                },
+                send_ussd: {
+                    submitting: false,
+                    active: false,
+                    update: 0,
+                    scheme: JSON.parse(JSON.stringify(schemes.send_ussd))
+                },
+                send_sms: {
+                    submitting: false,
+                    active: false,
+                    update: 0,
+                    scheme: JSON.parse(JSON.stringify(schemes.send_sms))
                 }
             }
         }
@@ -112,6 +129,7 @@ const mixins = {
     methods: {
         createObject: function (data, type, update= 0) {
             const vm = this
+            vm.popup[type].submitting = true
             const method = update ? 'patch' : 'post'
             const url = update ? `${vm.model[type].url}${update}/` : vm.model[type].url
             let new_data = {}
@@ -123,6 +141,7 @@ const mixins = {
               }
             }
             axios[method](url, new_data).then(response => {
+                vm.popup[type].submitting = false
                 if ([200, 201].indexOf(response.code) > -1 ) {
                     vm.getData(type)
                     vm.showNotify('top-right', update ? 'Данные обновлены' : 'Настройки добавлены!', 'positive')
@@ -161,9 +180,25 @@ const mixins = {
                 timeout: 3000
             })
         },
-        actionRequest(url, data, callback = '') {
+        actionRequest(url, data, type, callback = '') {
             const vm = this
-            axios.post(url, data).then(response => {
+            if (type) {
+                vm.popup[type].submitting = true
+            }
+            let new_data = {}
+            for (let key in data) {
+              if ( data[key].type === 'select' ) {
+                new_data[key] = data[key].value.value
+              } else {
+                new_data[key] = data[key].value
+              }
+            }
+            axios.post(url, new_data).then(response => {
+                if (type) {
+                    vm.popup[type].submitting = false
+                    vm.popup.active = vm.popup[type].active = false
+                    vm.popup[type].scheme = JSON.parse(JSON.stringify(schemes[type]))
+                }
                 vm.showNotify(
                     'top-right',
                     response.message,
@@ -173,6 +208,7 @@ const mixins = {
                     vm.getData(callback)
                 }
             })
+            return true
         },
         getData(type, params) {
             const vm = this

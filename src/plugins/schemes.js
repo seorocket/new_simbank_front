@@ -120,6 +120,41 @@ const schemes = {
             value: '',
             type: 'hidden'
         }
+    },
+    send_ussd: {
+        msg: {
+            value: '',
+            type: 'input',
+            label: 'Сообщение'
+        },
+        line_id: {
+            value: '',
+            type: 'hidden'
+        },
+        sim: {
+            value: '',
+            type: 'hidden'
+        }
+    },
+    send_sms: {
+        phone: {
+            value: '',
+            type: 'input',
+            label: 'Номер получателя'
+        },
+        msg: {
+            value: '',
+            type: 'input',
+            label: 'Сообщение'
+        },
+        line_id: {
+            value: '',
+            type: 'hidden'
+        },
+        sim: {
+            value: '',
+            type: 'hidden'
+        }
     }
 }
 
