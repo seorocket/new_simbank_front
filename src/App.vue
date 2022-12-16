@@ -159,16 +159,20 @@ export default {
     authorization() {
       const vm = this
       axios.post('/authorize/', vm.login).then(response => {
-        if (response.data.data.token) {
+        if (response.data.data && response.data.data.token) {
           axios.defaults.headers.common.Authorization = `Token ${response.data.data.token}`
           vm.login = {username: '', password: ''}
           this.$store.dispatch('authorize', response.data.data)
         } else {
-          vm.showNotify('top-right', response.data.message, 'negative')
+          vm.showNotify('top-right', response.data.response_message, 'negative')
         }
       }).catch(error => {
         console.log(error)
-        vm.showNotify('top-right', 'ошибка авторизации', 'negative')
+        if (error.status === 400) {
+          vm.showNotify('top-right', error.data.response_message, 'negative')
+        } else {
+          vm.showNotify('top-right', 'ошибка авторизации', 'negative')
+        }
       })
     }
   },
