@@ -10,6 +10,7 @@ export default new Vuex.Store({
     miniStateDrawerL: false,
     miniStateDrawerR: true,
     token: undefined,
+    user_id: undefined,
     states: {
       servers: [],
       smbs: [],
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     },
     authorize (state, data) {
       state.token = data.token
+      state.user_id = data.user_id
     },
     setStates (state, data) {
       state.states = {...state.states, ...data} 

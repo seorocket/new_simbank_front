@@ -1,17 +1,18 @@
 import axios from "axios";
 import schemes from "./schemes"
 
-String.prototype.format = function () {
-  // store arguments in an array
-  let args = arguments;
-  // use replace to iterate over the string
-  // select the match and check if the related argument is present
-  // if yes, replace the match with the argument
-  return this.replace(/{([0-9]+)}/g, function (match, index) {
-    // check if the argument is present
-    return typeof args[index] == 'undefined' ? match : args[index];
-  });
-};
+// String.prototype.format = function () {
+//   // store arguments in an array
+//   let args = arguments;
+//   // use replace to iterate over the string
+//   // select the match and check if the related argument is present
+//   // if yes, replace the match with the argument
+//   return this.replace(/{([0-9]+)}/g, function (match, index) {
+//     // check if the argument is present
+//     return typeof args[index] == 'undefined' ? match : args[index];
+//   });
+// };
+
 
 const mixins = {
     data () {
@@ -57,8 +58,8 @@ const mixins = {
                     data: [],
                     name: 'GOIP Channels'
                 },
-                employees: {
-                    url: '/clients/{0}/get_employees/',
+                employee: {
+                    url: '/employee/',
                     data: [],
                     name: 'Сотрудники'
                 }
@@ -101,50 +102,62 @@ const mixins = {
                 gateway: {
                     submitting: false,
                     active: false,
-                    update: 0,
+                    update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.gateway))
                 },
                 smb: {
                     submitting: false,
                     active: false,
-                    update: 0,
+                    update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.smb))
                 },
                 smb_server: {
                     submitting: false,
                     active: false,
-                    update: 0,
+                    update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.smb_server))
                 },
                 sim: {
                     submitting: false,
                     active: false,
-                    update: 0,
+                    update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.sim))
                 },
                 activate_sim: {
                     submitting: false,
                     active: false,
-                    update: 0,
+                    update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.activate_sim))
                 },
                 send_ussd: {
                     submitting: false,
                     active: false,
-                    update: 0,
+                    update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.send_ussd))
                 },
                 send_sms: {
                     submitting: false,
                     active: false,
-                    update: 0,
+                    update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.send_sms))
+                },
+                employee: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.employee))
+                },
+                share_lines: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.share_lines))
                 }
             }
         }
     },
     methods: {
-        createObject: function (data, type, update= 0) {
+        createObject: function (data, type, update= false) {
             const vm = this
             vm.popup[type].submitting = true
             const method = update ? 'patch' : 'post'
@@ -163,7 +176,7 @@ const mixins = {
                     vm.getData(type)
                     vm.showNotify('top-right', update ? 'Данные обновлены' : 'Настройки добавлены!', 'positive')
                     vm.popup.active = vm.popup[type].active = false
-                    vm.popup[type].update = 0
+                    vm.popup[type].update = false
                     vm.popup[type].scheme = JSON.parse(JSON.stringify(schemes[type]))
                 } else if ( response.code === 400) {
                     let message = ''
@@ -231,7 +244,7 @@ const mixins = {
             const vm = this
             let url
             if (id) {
-                url = vm.model[type].url.format(id)
+                url = vm.model[type].url
             } else {
                 url = params ? `${vm.model[type].url}?${params}` : vm.model[type].url
             }
@@ -239,7 +252,7 @@ const mixins = {
                 vm.model[type].data = response.data
             })
         },
-        openPopup(type, detail = 0) {
+        openPopup(type, detail = false) {
             const vm = this
             if (detail) {
                 vm.popup[type].update = detail

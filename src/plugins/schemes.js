@@ -2,34 +2,57 @@ const schemes = {
     gateway: {
         name: {
             value: 'blank',
+            create_only: false,
             type: 'hidden'
         },
         smb_server: {
             value: {'label': '', 'value': ''},
+            create_only: false,
             type: 'select',
             options: 'smb_server',
             label: 'Укажите Sheduler'
         },
         goip_id: {
             value: '',
+            create_only: false,
             type: 'input',
             label: 'Укажите ID GOIP'
         },
         password: {
             value: '',
+            create_only: false,
             type: 'input',
             label: 'Укажите пароль GOIP для сервера'
         },
         goip_type: {
             value: {'label': '', 'value': ''},
+            create_only: false,
             type: 'select',
             options: 'goip_type',
             label: 'Укажите тип GOIP'
         },
         client: {
             value: '',
+            create_only: false,
             type: 'hidden'
         }
+    },
+    employee: {
+        username: {
+            value: '',
+            type: 'input',
+            label: 'Логин сотрудника'
+        },
+        password: {
+            value: '',
+            type: 'input',
+            label: 'Пароль сотрудника',
+        },
+        employer: {
+            value: JSON.parse(window.localStorage.getItem('vuex')).user_id,
+            type: 'hidden',
+            label: ''
+        },
     },
     smb: {
         name: {
@@ -155,7 +178,8 @@ const schemes = {
             value: '',
             type: 'hidden'
         }
-    }
+    },
+    share_lines: {}
 }
 
 export default schemes

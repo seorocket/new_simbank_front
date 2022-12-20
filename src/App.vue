@@ -124,7 +124,6 @@ export default {
     if (this.token) {
       axios.defaults.headers.common.Authorization = `Token ${this.token}`
     }
-
     axios.interceptors.response.use(
     (response) => {
       return {code: response.status, data: response.data, message: response.data.response_message}
@@ -142,6 +141,7 @@ export default {
       'miniStateDrawerL',
       'miniStateDrawerR',
       'token',
+      'user_id',
       'states'
     ])
   },
