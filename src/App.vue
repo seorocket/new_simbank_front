@@ -104,6 +104,13 @@ export default {
           link: 'settings',
           css: ''
         },
+        {
+          name: 'PROFILE',
+          caption: 'Аккаунт',
+          icon: 'user.png',
+          link: 'profile',
+          css: 'width: 80%;'
+        },
       ],
       dialog: true,
       login: {
@@ -168,7 +175,7 @@ export default {
         }
       }).catch(error => {
         console.log(error)
-        if (error.status === 400) {
+        if (error.status >= 400) {
           vm.showNotify('top-right', error.data.response_message, 'negative')
         } else {
           vm.showNotify('top-right', 'ошибка авторизации', 'negative')

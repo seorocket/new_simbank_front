@@ -32,7 +32,7 @@
                   div(class="row items-center justify-end")
                     q-btn(v-close-popup label="Close" color="primary" flat)
 
-        q-btn(label="Применить" color="primary" v-on:click="filterByDates()")
+        q-btn(label="Применить" color="primary" :disabled="!filter.start || !filter.end" v-on:click="filterByDates()")
 
       q-separator
       q-card-section
@@ -98,13 +98,14 @@ export default {
   },
   methods: {
     filterByDates () {
-      this.getData('/sim/get_all_sms/', 'data', this.filter)
+      const params = `start=${this.filter.start}&end=${this.filter.end}`
+      this.getData('sms', params)
     },
   },
   beforeMount () {
     const f_start = new Date().setDate(new Date().getDate() -1 )
     const f_end = new Date()
-    let params = [`start=${date.formatDate(f_start, 'YYYY-MM-DD HH:mm:ss')}`, `end=${date.formatDate(f_end, 'YYYY-MM-DD HH:mm:ss')}`].join('&')
+    let params = `start=${date.formatDate(f_start, 'YYYY-MM-DD HH:mm:ss')}&end=${date.formatDate(f_end, 'YYYY-MM-DD HH:mm:ss')}`
     this.getData('sms', params)
   }
 }
