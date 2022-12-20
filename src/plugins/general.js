@@ -1,6 +1,18 @@
 import axios from "axios";
 import schemes from "./schemes"
 
+String.prototype.format = function () {
+  // store arguments in an array
+  let args = arguments;
+  // use replace to iterate over the string
+  // select the match and check if the related argument is present
+  // if yes, replace the match with the argument
+  return this.replace(/{([0-9]+)}/g, function (match, index) {
+    // check if the argument is present
+    return typeof args[index] == 'undefined' ? match : args[index];
+  });
+};
+
 const mixins = {
     data () {
         return {
@@ -44,6 +56,11 @@ const mixins = {
                     url: '/gateway/state/',
                     data: [],
                     name: 'GOIP Channels'
+                },
+                employees: {
+                    url: '/clients/{0}/get_employees/',
+                    data: [],
+                    name: 'Сотрудники'
                 }
             },
             settings: {
@@ -210,9 +227,14 @@ const mixins = {
             })
             return true
         },
-        getData(type, params) {
+        getData(type, params, id) {
             const vm = this
-            const url = params ? `${vm.model[type].url}?${params}` : vm.model[type].url
+            let url
+            if (id) {
+                url = vm.model[type].url.format(id)
+            } else {
+                url = params ? `${vm.model[type].url}?${params}` : vm.model[type].url
+            }
             axios.get(url).then(response => {
                 vm.model[type].data = response.data
             })

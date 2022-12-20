@@ -105,10 +105,10 @@ export default {
           css: ''
         },
         {
-          name: 'PROFILE',
-          caption: 'Аккаунт',
+          name: 'EMPLOYEES',
+          caption: 'Сотрудники',
           icon: 'user.png',
-          link: 'profile',
+          link: 'employess',
           css: 'width: 80%;'
         },
       ],

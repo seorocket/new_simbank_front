@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Goip from '../views/Goip.vue'
 import Sim from '../views/Sim.vue'
 import Simbank from '../views/Simbank.vue'
+import Employees from '../views/Employees.vue'
 import Getsms from '../views/Getsms.vue'
 import Settings from '../views/Settings.vue'
 import SmsCollector from '../views/SmsCollector.vue'
@@ -47,6 +48,14 @@ const routes = [
     text: 'SIMBANK',
     show: true,
     component: Simbank
+  },
+  {
+    path: '/employess',
+    name: 'Employess',
+    icon: 'source',
+    text: 'Employess',
+    show: true,
+    component: Employees
   },
   {
     path: '/get-sms',
