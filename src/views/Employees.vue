@@ -139,8 +139,13 @@ export default {
   methods: {
     openShareLines(item) {
       const vm = this
-      vm.userdata = item.gateway_lines.reduce((o, key) => Object.assign(o, {[key.name]: key.data}), {})
-      console.log(vm.userdata)
+      vm.userdata = {}
+      for(let i in vm.model.gateway.data) {
+        vm.userdata[vm.model.gateway.data[i].name] = []
+      }
+      for (let i in item.gateway_lines) {
+        vm.userdata[item.gateway_lines[i].name] = item.gateway_lines[i].data
+      }
       vm.popup.active = vm.popup.share_lines.active = true
     }
   },
