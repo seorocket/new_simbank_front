@@ -7,7 +7,7 @@
         div {{ g.name }}
         div
           span(v-for="l in g.lines")
-            q-checkbox(v-model="selection[g.name]" :val="l" :label="l" color="teal")
+            q-checkbox(v-model="tmp_userdata[g.name]" :val="l" :label="l" color="teal")
       q-btn(
         flat
         :loading="data.submitting"
@@ -31,12 +31,12 @@ export default {
   props: ['title', 'submit', 'model', 'data', 'gateways', 'userdata'],
   data() {
     return {
-      selection: this.userdata
+      selection: [],
+      tmp_userdata: this.userdata
     }
   },
   methods: {
     convertData() {
-      console.log(666)
       this.submit('/employee/share-gateway-lines', {}, 'share_lines')
     }
   }

@@ -77,9 +77,9 @@
       PopupShareLines(
         title="Расшарить GOIP линии"
         :submit="actionRequest"
-        :data="popup.share_lines"
-        :gateways="model.gateway.data"
-        :userdata="userdata"
+        v-bind:data="popup.share_lines"
+        v-bind:gateways="model.gateway.data"
+        v-bind:userdata="userdata"
         model="share_lines"
         @close="closePopup"
       )
@@ -141,7 +141,8 @@ export default {
       const vm = this
       vm.userdata = {}
       for(let i in vm.model.gateway.data) {
-        vm.userdata[vm.model.gateway.data[i].name] = []
+        // добавляем через $set чтобы элементы были реактивные
+        this.$set(vm.userdata, vm.model.gateway.data[i].name, [])
       }
       for (let i in item.gateway_lines) {
         vm.userdata[item.gateway_lines[i].name] = item.gateway_lines[i].data
