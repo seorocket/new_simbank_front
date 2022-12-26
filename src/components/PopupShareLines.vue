@@ -7,13 +7,13 @@
         div {{ g.name }}
         div
           span(v-for="l in g.lines")
-            q-checkbox(v-model="tmp_userdata[g.name]" :val="l" :label="l" color="teal")
+            q-checkbox(v-model="user_lines_data[g.name]" :val="l" :label="l" color="teal")
       q-btn(
         flat
         :loading="data.submitting"
         label="Изменить"
         color="secondary"
-        @click="convertData()"
+        @click="changeAvailableLines()"
       )
         template(v-slot:loading)
           q-spinner-facebook
@@ -28,16 +28,17 @@
 <script>
 export default {
   name: "PopupShareLines",
-  props: ['title', 'submit', 'model', 'data', 'gateways', 'userdata'],
+  props: ['title', 'submit', 'model', 'data', 'gateways', 'user_lines_data', 'edit_user_id'],
   data() {
-    return {
-      selection: [],
-      tmp_userdata: this.userdata
-    }
+    return {}
   },
   methods: {
-    convertData() {
-      this.submit('/employee/share-gateway-lines', {}, 'share_lines')
+    changeAvailableLines() {
+      let data = []
+      for (let i in this.user_lines_data) {
+        data.push({'name': i, 'lines': this.user_lines_data[i]})
+      }
+      this.submit(`/employee/${this.edit_user_id}/share-gateway-lines/`, {'data': {'data': data, 'type': 'custom'}}, 'share_lines', 'employee')
     }
   }
 }

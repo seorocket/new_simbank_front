@@ -179,7 +179,8 @@ const schemes = {
             type: 'hidden'
         }
     },
-    share_lines: {}
+    share_lines: {},
+    share_slots: {}
 }
 
 export default schemes

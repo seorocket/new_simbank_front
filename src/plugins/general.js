@@ -152,7 +152,13 @@ const mixins = {
                     active: false,
                     update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.share_lines))
-                }
+                },
+                share_slots: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.share_slots))
+                },
             }
         }
     },
@@ -218,11 +224,18 @@ const mixins = {
             let new_data = {}
             for (let key in data) {
               if ( data[key].type === 'select' ) {
-                new_data[key] = data[key].value.value
+                  new_data[key] = data[key].value.value
+              } else if ( data[key].type === 'custom' ) {
+                  if ( key === 'custom' ){
+                      continue
+                  }
+                  new_data = data[key]
               } else {
-                new_data[key] = data[key].value
+                  new_data[key] = data[key].value
               }
+              console.log(key)
             }
+            console.log(url, new_data)
             axios.post(url, new_data).then(response => {
                 if (type) {
                     vm.popup[type].submitting = false

@@ -42,6 +42,7 @@
                 color="secondary"
                 label="Изменить"
                 style="margin-right: 10px;"
+                @click="openShareSlots(props.row)"
               )
             q-td(key="actions" :props="props")
               q-btn(
@@ -73,14 +74,26 @@
         :settings="settings"
         @close="closePopup"
       )
-      <!-- Расшарить линии -->
+      <!-- Расшарить линии Гоипа -->
       PopupShareLines(
         title="Расшарить GOIP линии"
         :submit="actionRequest"
         v-bind:data="popup.share_lines"
         v-bind:gateways="model.gateway.data"
-        v-bind:userdata="userdata"
+        v-bind:user_lines_data="user_lines_data"
+        v-bind:edit_user_id="edit_user_id"
         model="share_lines"
+        @close="closePopup"
+      )
+      <!-- Расшарить слоты Симбанка -->
+      PopupShareSlots(
+        title="Расшарить SMB слоты"
+        :submit="actionRequest"
+        v-bind:data="popup.share_slots"
+        v-bind:smb="model.smb.data"
+        v-bind:user_slots_data="user_slots_data"
+        v-bind:edit_user_id="edit_user_id"
+        model="share_slots"
         @close="closePopup"
       )
 </template>
@@ -90,12 +103,14 @@ import mixins from "../plugins/general"
 import { mapState } from 'vuex'
 import PopupCreateUpdate from "@/components/PopupCreateUpdate.vue";
 import PopupShareLines from "@/components/PopupShareLines.vue";
+import PopupShareSlots from "@/components/PopupShareSlots.vue";
 
 export default {
   mixins: [mixins],
   components: {
     PopupCreateUpdate,
-    PopupShareLines
+    PopupShareLines,
+    PopupShareSlots
   },
   computed: {
     ...mapState([
@@ -104,7 +119,9 @@ export default {
   },
   data () {
     return {
-      userdata: {},
+      user_lines_data: {},
+      user_slots_data: {},
+      edit_user_id: 0,
       columns: [
         {
           name: 'username',
@@ -139,15 +156,29 @@ export default {
   methods: {
     openShareLines(item) {
       const vm = this
-      vm.userdata = {}
+      vm.edit_user_id = item.id
+      vm.user_lines_data = {}
       for(let i in vm.model.gateway.data) {
         // добавляем через $set чтобы элементы были реактивные
-        this.$set(vm.userdata, vm.model.gateway.data[i].name, [])
+        vm.$set(vm.user_lines_data, vm.model.gateway.data[i].name, [])
       }
       for (let i in item.gateway_lines) {
-        vm.userdata[item.gateway_lines[i].name] = item.gateway_lines[i].data
+        vm.user_lines_data[item.gateway_lines[i].name] = item.gateway_lines[i].data
       }
       vm.popup.active = vm.popup.share_lines.active = true
+    },
+    openShareSlots(item) {
+      const vm = this
+      vm.edit_user_id = item.id
+      vm.user_slots_data = {}
+      for(let i in vm.model.smb.data) {
+        // добавляем через $set чтобы элементы были реактивные
+        vm.$set(vm.user_slots_data, vm.model.smb.data[i].name, [])
+      }
+      for (let i in item.smb_slots) {
+        vm.user_slots_data[item.smb_slots[i].name] = item.smb_slots[i].data
+      }
+      vm.popup.active = vm.popup.share_slots.active = true
     }
   },
   beforeMount () {
