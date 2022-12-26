@@ -159,6 +159,13 @@ const schemes = {
             type: 'hidden'
         }
     },
+    change_password: {
+        password: {
+            value: '',
+            type: 'input',
+            label: 'Новый пароль'
+        }
+    },
     send_sms: {
         phone: {
             value: '',

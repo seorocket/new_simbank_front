@@ -159,6 +159,12 @@ const mixins = {
                     update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.share_slots))
                 },
+                change_password: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.change_password))
+                },
             }
         }
     },

@@ -36,6 +36,8 @@
               )
 
             q-td(key="smb" :props="props")
+              div(v-for="item in props.row.smb_slots" class="item_chips")
+                span(class="chips_title") {{ item.name }}
               q-btn(
                 v-if="props.row.id"
                 size="xs"
@@ -50,14 +52,15 @@
                 size="xs"
                 color="secondary"
                 label="Изменить пароль"
-                style="margin-right: 10px; font-size: 12px;"
+                style="margin-right: 10px;"
+                @click="openChangePassword(props.row)"
               )
               q-btn(
                 v-if="props.row.id"
                 size="xs"
                 color="deep-orange"
                 label="Удалить"
-                style="margin-right: 10px; font-size: 12px;"
+                style="margin-right: 10px;"
                 @click="deleteItem(props.row.id, 'employee')"
               )
     <!-- popups -->
@@ -96,6 +99,16 @@
         model="share_slots"
         @close="closePopup"
       )
+      PopupChangePassword(
+        title="Изменить пароль пользователю:"
+        :submit="actionRequest"
+        :data="popup.change_password"
+        model="change_password"
+        :settings="settings"
+        v-model:edit_user_id="edit_user_id"
+        v-model:edit_username="edit_username"
+        @close="closePopup"
+      )
 </template>
 
 <script>
@@ -104,13 +117,15 @@ import { mapState } from 'vuex'
 import PopupCreateUpdate from "@/components/PopupCreateUpdate.vue";
 import PopupShareLines from "@/components/PopupShareLines.vue";
 import PopupShareSlots from "@/components/PopupShareSlots.vue";
+import PopupChangePassword from "@/components/PopupChangePassword.vue";
 
 export default {
   mixins: [mixins],
   components: {
     PopupCreateUpdate,
     PopupShareLines,
-    PopupShareSlots
+    PopupShareSlots,
+    PopupChangePassword
   },
   computed: {
     ...mapState([
@@ -120,8 +135,9 @@ export default {
   data () {
     return {
       user_lines_data: {},
-      user_slots_data: {},
+      user_slots_data: [],
       edit_user_id: 0,
+      edit_username: '',
       columns: [
         {
           name: 'username',
@@ -156,7 +172,7 @@ export default {
   methods: {
     openShareLines(item) {
       const vm = this
-      vm.edit_user_id = item.id
+      vm.user_data = item.id
       vm.user_lines_data = {}
       for(let i in vm.model.gateway.data) {
         // добавляем через $set чтобы элементы были реактивные
@@ -170,16 +186,17 @@ export default {
     openShareSlots(item) {
       const vm = this
       vm.edit_user_id = item.id
-      vm.user_slots_data = {}
-      for(let i in vm.model.smb.data) {
-        // добавляем через $set чтобы элементы были реактивные
-        vm.$set(vm.user_slots_data, vm.model.smb.data[i].name, [])
-      }
-      for (let i in item.smb_slots) {
-        vm.user_slots_data[item.smb_slots[i].name] = item.smb_slots[i].data
-      }
+      vm.user_slots_data = []
+      vm.user_slots_data = item.smb_slots.map(item => item.data)
       vm.popup.active = vm.popup.share_slots.active = true
-    }
+    },
+    openChangePassword (item) {
+      console.log(item.username)
+      const vm = this
+      vm.edit_user_id = item.id
+      vm.edit_username = item.username
+      vm.popup.active = vm.popup.change_password.active = true
+    },
   },
   beforeMount () {
     this.getData('employee')
