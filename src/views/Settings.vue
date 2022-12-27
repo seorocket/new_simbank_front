@@ -161,7 +161,7 @@ export default {
   },
   methods: {
     createServer () {
-      this.actionRequest('/scheduler/create-clo-server', {}, 'create_server', 'smb_server')
+      this.actionRequest('/scheduler/create-clo-server/', {}, 'create_server', 'smb_server')
     }
   },
   beforeMount () {
