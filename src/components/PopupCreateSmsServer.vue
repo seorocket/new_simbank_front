@@ -14,21 +14,26 @@
         span  нажмите кнопку "Свой сервер" и впишите свой адрес сервера
       q-btn(
         flat
+        :loading="data.create_server.submitting"
         label="Создать"
         color="primary"
-        @click="submit()"
+        @click="createServer()"
+        )
+        template(v-slot:loading)
+          q-spinner-facebook
+      q-btn(
+        flat
+        v-if="!data.create_server.submitting"
+        label="Отмена"
+        color="primary"
+        v-on:click="$emit('close', model)"
         )
       q-btn(
+        v-if="!data.create_server.submitting"
         flat
         label="Свой сервер"
         color="primary"
         @click="data.create_server.active = false; data.smb_server.active = true"
-        )
-      q-btn(
-        flat
-        label="Отмена"
-        color="primary"
-        v-on:click="$emit('close', model)"
         )
 </template>
 
@@ -36,9 +41,14 @@
 
 export default {
   name: "PopupCreateSmsServer",
-  props: ['title', 'submit', 'model', 'data'],
+  props: ['title', 'model', 'data', 'submit'],
   data() {
     return {}
+  },
+  methods: {
+    createServer () {
+      this.submit('/scheduler/create-clo-server/', {}, 'create_server', 'smb_server')
+    }
   }
 }
 </script>

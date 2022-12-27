@@ -50,12 +50,21 @@
             img(src="https://simbank.pro/static/media/logo.3a24e86a.svg" style="display: table; margin: 0 auto;")
           LeftMenuLink(
             v-for="item in leftMenu"
+            v-if="item.for_superuser ? user.superuser : true"
             v-bind:icon="item.icon"
             v-bind:name="item.name"
             v-bind:link="item.link"
             v-bind:caption="item.caption"
             v-bind:css="item.css"
            )
+          q-item
+            q-item-section
+              q-item-label Аккаунт
+              q-item-label(caption) {{ user.username }}
+          q-item(v-if="user.superuser")
+            q-item-section
+              q-item-label Баланс
+              q-item-label(caption) {{ user.balance }} руб.
       q-page-container(style="padding-right: 15px; margin-left: 15px; padding-top: 65px;")
         router-view
 </template>
@@ -64,9 +73,11 @@
 import axios from 'axios'
 import { mapState } from 'vuex'
 import LeftMenuLink from '@/components/LeftMenuLink.vue'
+import mixins from "@/plugins/general";
 
 
 export default {
+  mixins: [mixins],
   meta: {
     title: 'Simbank.pro'
   },
@@ -75,47 +86,57 @@ export default {
   },
   data () {
     return {
+      user: {
+        username: '',
+        balance: '',
+        superuser: false
+      },
       leftMenu: [
         {
           name: 'GOIP',
           caption: 'Channels',
           icon: 'goip.png',
           link: 'go-ip',
-          css: ''
+          css: '',
+          for_superuser: false
         },
         {
           name: 'SIM',
           caption: 'Список Sim-Карт',
           icon: 'sim.png',
           link: 'sim-list',
-          css: 'padding: 0 5px;'
+          css: 'padding: 0 5px;',
+          for_superuser: false
         },
         {
           name: 'SMS COLLECTOR',
           caption: 'Весь список СМС',
           icon: 'get_sms.png',
           link: 'sms-collector',
-          css: 'padding-left: 15px;'
+          css: 'padding-left: 15px;',
+          for_superuser: false
         },
         {
           name: 'SETTINGS',
           caption: 'Настройки',
           icon: 'simbank.png',
           link: 'settings',
-          css: ''
+          css: '',
+          for_superuser: true
         },
         {
           name: 'EMPLOYEES',
           caption: 'Сотрудники',
           icon: 'user.png',
           link: 'employess',
-          css: 'width: 80%;'
-        },
+          css: 'width: 80%;',
+          for_superuser: true
+        }
       ],
       dialog: true,
       login: {
         username: '',
-        password: ''
+        password: '',
       }
     }
   },
@@ -170,7 +191,10 @@ export default {
         if (response.data.data && response.data.data.token) {
           axios.defaults.headers.common.Authorization = `Token ${response.data.data.token}`
           vm.login = {username: '', password: ''}
-          this.$store.dispatch('authorize', response.data.data)
+          vm.$store.dispatch('authorize', response.data.data)
+          axios.get(`/clients/${vm.user_id}/`).then(response => {
+            vm.user = response.data
+          })
         } else {
           vm.showNotify('top-right', response.data.response_message, 'negative')
         }
@@ -184,8 +208,13 @@ export default {
       })
     }
   },
- beforeMount () {
-    // let vm = this
+ mounted () {
+    let vm = this
+    if (vm.user_id) {
+      axios.get(`/clients/${vm.user_id}/`).then(response => {
+        vm.user = response.data
+      })
+    }
  }
 }
 </script>

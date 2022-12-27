@@ -2,17 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Goip from '../views/Goip.vue'
 import Sim from '../views/Sim.vue'
-import Simbank from '../views/Simbank.vue'
 import Employees from '../views/Employees.vue'
-import Getsms from '../views/Getsms.vue'
 import Settings from '../views/Settings.vue'
 import SmsCollector from '../views/SmsCollector.vue'
 import CallCollector from '../views/CallCollector.vue'
 import GetApi from '../views/GetApi.vue'
-import Cabinet from '../views/Cabinet.vue'
 import GetFaq from '../views/GetFaq.vue'
-import GetHistory from '../views/GetHistory.vue'
-import GetTelegram from '../views/GetTelegram.vue'
+
 
 Vue.use(VueRouter)
 
@@ -42,28 +38,12 @@ const routes = [
     component: Sim
   },
   {
-    path: '/simbank',
-    name: 'Simbank',
-    icon: 'source',
-    text: 'SIMBANK',
-    show: true,
-    component: Simbank
-  },
-  {
     path: '/employess',
     name: 'Employess',
     icon: 'source',
     text: 'Employess',
     show: true,
     component: Employees
-  },
-  {
-    path: '/get-sms',
-    name: 'Get SMS',
-    icon: 'source',
-    text: 'Get SMS',
-    show: true,
-    component: Getsms
   },
   {
     path: '/get-api',
@@ -74,36 +54,12 @@ const routes = [
     component: GetApi
   },
   {
-    path: '/get-history',
-    name: 'Get History',
-    icon: 'source',
-    text: 'Get History',
-    show: true,
-    component: GetHistory
-  },
-  {
-    path: '/get-telegram',
-    name: 'Get Telegram',
-    icon: 'source',
-    text: 'Get Telegram',
-    show: true,
-    component: GetTelegram
-  },
-  {
     path: '/get-faq',
     name: 'Get FAQ',
     icon: 'source',
     text: 'Get FAQ',
     show: true,
     component: GetFaq
-  },
-  {
-    path: '/get-cabinet',
-    name: 'Cabinet',
-    icon: 'source',
-    text: 'Cabinet',
-    show: true,
-    component: Cabinet
   },
   {
     path: '/sms-collector',
@@ -136,9 +92,6 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-   if(to.name !== 'Get SMS' || to.name !== 'Main'){
-     clearInterval(window.timeout);
-   }
-   next()
+  next()
 })
 export default router

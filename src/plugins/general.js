@@ -62,6 +62,11 @@ const mixins = {
                     url: '/employee/',
                     data: [],
                     name: 'Сотрудники'
+                },
+                client: {
+                    url: '/clients/',
+                    data: [],
+                    name: 'Клиенты'
                 }
             },
             settings: {
@@ -215,6 +220,10 @@ const mixins = {
             if (response.code === 204) {
                 vm.getData(type)
                 vm.showNotify('top-right', `Данные удалены: ${vm.model[type].name}`, 'positive')
+                if (type === 'smb_server') {
+                    vm.getData('gateway')
+                    vm.getData('smb')
+                }
             }
           })
         },
@@ -267,13 +276,19 @@ const mixins = {
             const vm = this
             let url
             if (id) {
-                url = vm.model[type].url
+                url = `${vm.model[type].url}${id}/`
             } else {
                 url = params ? `${vm.model[type].url}?${params}` : vm.model[type].url
             }
-            axios.get(url).then(response => {
-                vm.model[type].data = response.data
-            })
+            if (id) {
+                axios.get(url).then(response => {
+                    return response.data.data
+                })
+            } else {
+                axios.get(url).then(response => {
+                    vm.model[type].data = response.data
+                })
+            }
         },
         openPopup(type, detail = false) {
             const vm = this
@@ -313,6 +328,9 @@ const mixins = {
           }).onOk(() => {
             vm.deleteObject(id, type)
           })
+        },
+        checkPermissions () {
+            console.log(this.$parent,1)
         }
     },
     watch: {
@@ -331,6 +349,9 @@ const mixins = {
         'model.gateway_lines.data'(event) {
           this.settings.gateway_lines = event.map(function(i){ return {'label': `${i.line_id} - ${i.sim_id ? i.sim_id : 'Свободно'}`, 'value': i.line_id}})
         }
+    },
+    beforeMount() {
+        this.checkPermissions()
     }
 }
 

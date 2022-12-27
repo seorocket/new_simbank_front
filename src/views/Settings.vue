@@ -22,9 +22,14 @@
         )
           q-tr(:props="props")
             q-td(key="name" :props="props" v-html="props.row.name")
-            q-td(key="server" :props="props" v-html="props.row.server")
+            q-td(key="server" :props="props" v-if="props.row.clo_server === true && props.row.status === false")
+              q-spinner-facebook
+              span  Сервер создается
+            q-td(key="server" :props="props" v-html="props.row.server" v-else)
             q-td(key="datetime" :props="props" v-html="props.row.datetime")
-            q-td(key="actions" :props="props")
+            q-td(key="actions" :props="props" v-if="props.row.clo_server === true && props.row.status === true")
+              q-btn(size="sm" round color="deep-orange" icon="delete" @click="deleteItem(props.row.id, 'smb_server')")
+            q-td(key="actions" :props="props" v-else-if="props.row.clo_server === false")
               q-btn(
                 size="sm"
                 round color="secondary"
@@ -33,6 +38,7 @@
                 v-on:click="openPopup('smb_server', props.row.id)"
                 )
               q-btn(size="sm" round color="deep-orange" icon="delete" @click="deleteItem(props.row.id, 'smb_server')")
+            q-td(v-else)
       q-separator
       q-card-actions
         q-btn(
@@ -119,7 +125,7 @@
       )
       PopupCreateSmsServer(
         title="Создание SMS сервера"
-        :submit="createServer"
+        :submit="actionRequest"
         :data="popup"
         model="create_server"
         @close="closePopup"
@@ -157,11 +163,6 @@ export default {
         { name: 'goip_type', label: 'Тип', field: 'goip_type', align: 'left'},
         { name: 'actions', label: 'Действия', align: 'center'}
       ]
-    }
-  },
-  methods: {
-    createServer () {
-      this.actionRequest('/scheduler/create-clo-server/', {}, 'create_server', 'smb_server')
     }
   },
   beforeMount () {
