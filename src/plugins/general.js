@@ -165,6 +165,12 @@ const mixins = {
                     update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.change_password))
                 },
+                create_server: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.change_password))
+                },
             }
         }
     },
@@ -239,9 +245,7 @@ const mixins = {
               } else {
                   new_data[key] = data[key].value
               }
-              console.log(key)
             }
-            console.log(url, new_data)
             axios.post(url, new_data).then(response => {
                 if (type) {
                     vm.popup[type].submitting = false

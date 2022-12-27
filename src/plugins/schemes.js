@@ -47,12 +47,7 @@ const schemes = {
             value: '',
             type: 'input',
             label: 'Пароль сотрудника',
-        },
-        employer: {
-            value: JSON.parse(window.localStorage.getItem('vuex')).user_id,
-            type: 'hidden',
-            label: ''
-        },
+        }
     },
     smb: {
         name: {
@@ -187,7 +182,8 @@ const schemes = {
         }
     },
     share_lines: {},
-    share_slots: {}
+    share_slots: {},
+    create_server: {}
 }
 
 export default schemes

@@ -6,7 +6,7 @@
           :ripple="false"
           color="secondary"
           label="Добавить настройки Сервера"
-          v-on:click="openPopup('smb_server')"
+          v-on:click="openPopup('create_server')"
           no-caps
         )
       q-separator
@@ -40,7 +40,7 @@
           color="secondary"
           label="Добавить настройки симбанка"
           no-caps
-          v-on:click="openPopup('smb')"
+          v-on:click="model.smb_server.data.length ? openPopup('smb') : showNotify('top-right', `Создайте сервер для добавления настроек симбанка или GOIP шлюза`, 'warning')"
         )
       q-separator
       q-card-section
@@ -66,7 +66,7 @@
           color="secondary"
           label="Добавить настройки GOIP"
           no-caps
-          v-on:click="openPopup('gateway')"
+          v-on:click="model.smb_server.data.length ? openPopup('gateway') : showNotify('top-right', `Создайте сервер для добавления настроек симбанка или GOIP шлюза`, 'warning')"
         )
       q-separator
       q-card-section
@@ -117,17 +117,25 @@
         :settings="settings"
         @close="closePopup"
       )
-
+      PopupCreateSmsServer(
+        title="Создание SMS сервера"
+        :submit="createServer"
+        :data="popup"
+        model="create_server"
+        @close="closePopup"
+      )
 </template>
 
 <script>
 import mixins from "../plugins/general"
 import PopupCreateUpdate from "../components/PopupCreateUpdate"
+import PopupCreateSmsServer from "../components/PopupCreateSmsServer"
 
 export default {
   mixins: [mixins],
   components: {
-    PopupCreateUpdate
+    PopupCreateUpdate,
+    PopupCreateSmsServer
   },
   data () {
     return {
@@ -149,6 +157,11 @@ export default {
         { name: 'goip_type', label: 'Тип', field: 'goip_type', align: 'left'},
         { name: 'actions', label: 'Действия', align: 'center'}
       ]
+    }
+  },
+  methods: {
+    createServer () {
+      this.actionRequest('/scheduler/create-clo-server', {}, 'create_server', 'smb_server')
     }
   },
   beforeMount () {

@@ -132,6 +132,7 @@ export default {
       const vm = this
       if (error.response.status === 401) {
         vm.$store.dispatch('authorize', '')
+        delete axios.defaults.headers.common["Authorization"]
       }
       return {code: error.response.status, data: error.response.data, message: error.response.data.response_message}
     })

@@ -105,8 +105,8 @@
         :data="popup.change_password"
         model="change_password"
         :settings="settings"
-        v-model:edit_user_id="edit_user_id"
-        v-model:edit_username="edit_username"
+        v-bind:edit_user_id="edit_user_id"
+        v-bind:edit_username="edit_username"
         @close="closePopup"
       )
 </template>
@@ -172,7 +172,7 @@ export default {
   methods: {
     openShareLines(item) {
       const vm = this
-      vm.user_data = item.id
+      vm.edit_user_id = item.id
       vm.user_lines_data = {}
       for(let i in vm.model.gateway.data) {
         // добавляем через $set чтобы элементы были реактивные

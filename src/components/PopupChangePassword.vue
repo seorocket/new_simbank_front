@@ -28,8 +28,7 @@
         :loading="data.submitting"
         label="Изменить"
         color="secondary"
-
-        @click="testClick()"
+        @click="changePassword"
       )
         template(v-slot:loading)
           q-spinner-facebook
@@ -52,12 +51,9 @@ export default {
     }
   },
   methods: {
-    testClick () {
-      console.log(this.url, this.edit_username)
+    changePassword () {
+      this.submit(`/employee/${this.edit_user_id}/set-password/`, this.data.scheme, 'employee')
     }
-  },
-  mounted() {
-    this.url = `/employee/${this.edit_user_id}/change_password/`
   }
 }
 </script>
