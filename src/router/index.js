@@ -8,83 +8,155 @@ import SmsCollector from '../views/SmsCollector.vue'
 import CallCollector from '../views/CallCollector.vue'
 import GetApi from '../views/GetApi.vue'
 import GetFaq from '../views/GetFaq.vue'
+import store from '../store/index.js'
 
 
 Vue.use(VueRouter)
 
+
+        // {
+        //   name: 'GOIP',
+        //   caption: 'Channels',
+        //   icon: 'goip.png',
+        //   link: 'go-ip',
+        //   css: '',
+        //   for_superuser: false
+        // },
+        // {
+        //   name: 'SIM',
+        //   caption: 'Список Sim-Карт',
+        //   icon: 'sim.png',
+        //   link: 'sim-list',
+        //   css: 'padding: 0 5px;',
+        //   for_superuser: false
+        // },
+        // {
+        //   name: 'SMS COLLECTOR',
+        //   caption: 'Весь список СМС',
+        //   icon: 'get_sms.png',
+        //   link: 'sms-collector',
+        //   css: 'padding-left: 15px;',
+        //   for_superuser: false
+        // },
+        // {
+        //   name: 'SETTINGS',
+        //   caption: 'Настройки',
+        //   icon: 'simbank.png',
+        //   link: 'settings',
+        //   css: '',
+        //   for_superuser: true
+        // },
+        // {
+        //   name: 'EMPLOYEES',
+        //   caption: 'Сотрудники',
+        //   icon: 'user.png',
+        //   link: 'employess',
+        //   css: 'width: 80%;',
+        //   for_superuser: true
+        // }
+
 const routes = [
   {
     path: '',
-    name: 'Main',
-    icon: 'source',
-    text: 'GOIP',
-    show: true,
+    name: 'GOIP',
+    caption: 'Channels',
+    icon: 'goip.png',
+    css: '',
+    show: false,
+    meta: {
+      roles: ['owner', 'employee'],
+    },
     component: Goip
   },
   {
     path: '/go-ip',
-    name: 'Main',
-    icon: 'source',
-    text: 'GOIP',
+    name: 'GOIP',
+    caption: 'Channels',
+    icon: 'goip.png',
+    css: '',
     show: true,
+    meta: {
+      roles: ['owner', 'employee'],
+    },
     component: Goip
   },
   {
     path: '/sim-list',
-    name: 'Sim',
-    icon: 'source',
-    text: 'SIM',
+    name: 'SIM',
+    caption: 'Список Sim-Карт',
+    icon: 'sim.png',
+    css: 'padding: 0 5px;',
     show: true,
+    meta: {
+      roles: ['owner', 'employee'],
+    },
     component: Sim
-  },
-  {
-    path: '/employess',
-    name: 'Employess',
-    icon: 'source',
-    text: 'Employess',
-    show: true,
-    component: Employees
   },
   {
     path: '/get-api',
     name: 'Get API',
     icon: 'source',
-    text: 'Get API',
-    show: true,
+    show: false,
+    meta: {
+      roles: ['owner'],
+    },
     component: GetApi
   },
   {
     path: '/get-faq',
     name: 'Get FAQ',
     icon: 'source',
-    text: 'Get FAQ',
-    show: true,
+    show: false,
+    meta: {
+      roles: ['owner', 'employee'],
+    },
     component: GetFaq
   },
   {
     path: '/sms-collector',
     name: 'SMS COLLECTOR',
-    icon: 'source',
-    text: 'SMS COLLECTOR',
+    caption: 'Весь список СМС',
+    icon: 'get_sms.png',
+    css: 'padding-left: 15px;',
     show: true,
+    meta: {
+      roles: ['owner', 'employee'],
+    },
     component: SmsCollector
   },
   {
     path: '/call-collector',
     name: 'CALL COLLECTOR',
     icon: 'source',
-    text: 'CALL COLLECTOR',
-    show: true,
+    show: false,
+    meta: {
+      roles: ['owner', 'employee'],
+    },
     component: CallCollector
   },
   {
     path: '/settings',
-    name: 'Настройки',
-    icon: 'source',
-    text: 'SETTINGS',
+    name: 'SETTINGS',
+    caption: 'Настройки',
+    icon: 'simbank.png',
     show: true,
+    meta: {
+      roles: ['owner'],
+    },
     component: Settings
-  }
+  },
+  {
+    path: '/employess',
+    name: 'EMPLOYEES',
+    caption: 'Сотрудники',
+    icon: 'user.png',
+    css: 'width: 80%;',
+    show: true,
+    meta: {
+      roles: ['owner'],
+    },
+    component: Employees
+  },
 ]
 
 const router = new VueRouter({
@@ -92,6 +164,10 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  next()
+  if (to.meta.roles.includes(store.state.user.role)) {
+    next()
+  } else {
+    next({'path': '/'})
+  }
 })
 export default router

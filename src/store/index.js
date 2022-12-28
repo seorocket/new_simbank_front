@@ -5,17 +5,13 @@ import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     miniStateDrawerL: false,
     miniStateDrawerR: true,
     token: undefined,
     user_id: undefined,
-    states: {
-      servers: [],
-      smbs: [],
-      goips: []
-    }
+    user: {}
   },
   mutations: {
     turnLeftDrawer (state, item) {
@@ -25,6 +21,9 @@ export default new Vuex.Store({
       state.token = data.token
       state.user_id = data.user_id
     },
+    user (state, data) {
+      state.user = data
+    },
     setStates (state, data) {
       state.states = {...state.states, ...data} 
     }
@@ -32,9 +31,14 @@ export default new Vuex.Store({
   actions: {
     authorize({ commit }, data) {
       commit('authorize', data)
+    },
+    user({ commit }, data) {
+      commit('user', data)
     }
   },
   modules: {
   },
   plugins: [createPersistedState()]
 })
+
+export default store

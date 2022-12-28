@@ -329,9 +329,6 @@ const mixins = {
             vm.deleteObject(id, type)
           })
         },
-        checkPermissions () {
-            console.log(this.$parent,1)
-        }
     },
     watch: {
         'model.smb.data'(event) {
@@ -349,9 +346,6 @@ const mixins = {
         'model.gateway_lines.data'(event) {
           this.settings.gateway_lines = event.map(function(i){ return {'label': `${i.line_id} - ${i.sim_id ? i.sim_id : 'Свободно'}`, 'value': i.line_id}})
         }
-    },
-    beforeMount() {
-        this.checkPermissions()
     }
 }
 
