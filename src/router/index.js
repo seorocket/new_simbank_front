@@ -164,7 +164,7 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  if (to.meta.roles.includes(store.state.user.role)) {
+  if (to.meta.roles.includes(store.state.user.role) || !Object.keys(store.state.user).length) {
     next()
   } else {
     next({'path': '/'})
