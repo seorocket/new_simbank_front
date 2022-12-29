@@ -23,8 +23,8 @@
           q-tr(:props="props")
             q-td(key="name" :props="props" v-html="props.row.name")
             q-td(key="server" :props="props" v-if="props.row.clo_server === true && props.row.status === false")
-              q-spinner-facebook
-              span  Сервер создается
+              q-spinner-gears(size="30px" style="margin-right: 15px")
+              span Сервер создается
             q-td(key="server" :props="props" v-html="props.row.server" v-else)
             q-td(key="datetime" :props="props" v-html="props.row.datetime")
             q-td(key="actions" :props="props" v-if="props.row.clo_server === true && props.row.status === true")

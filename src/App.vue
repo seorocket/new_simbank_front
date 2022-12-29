@@ -7,37 +7,82 @@
         persistent
         )
         q-card
-          q-card-section(class="row items-center")
-            span(class="q-ml-sm text-h6") Авторизация
-          q-card-section(class="row items-center")
-            form(@submit.prevent="authorization()" method="post" id="login" style="min-width: 400px")
-              q-input(
-                v-model="login.username"
-                label="Логин"
-                type="text"
-                lazy-rules
-                outlined
-                stack-label
-                style="width: 100%; margin-bottom: 10px"
-              )
-              q-input(
-                outlined
-                v-model="login.password"
-                hint=""
-                type="password"
-                label="Пароль"
-                stack-label
-                style="width: 100%"
-              )
-              q-btn(
-                flat
-                label="Войти"
-                color="primary"
-                type="submit"
-                )
-              //q-btn(label="Зарегистрироваться" color="primary"  @click="popup.auth = false; popup.register = true")
-              p(style="padding-top:21px; text-align:center")
-                a(target="_blank" style="color:red; font-weight:bold; font-size:20px;"  href="https://simbank.pro/payment/") Страница оплаты
+          q-tabs(
+            v-model="tab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+          )
+            q-tab(name="authorization" label="Авторизация" class="q-py-md")
+            q-tab(name="registration" label="Регистрация" class="q-py-md")
+
+          q-tab-panels(v-model="tab")
+            q-tab-panel(name="authorization")
+              q-card-section(class="row items-center")
+                form(@submit.prevent="authorization()" method="post" id="login" style="min-width: 400px")
+                  q-input(
+                    v-model="login.username"
+                    label="Логин"
+                    type="text"
+                    lazy-rules
+                    outlined
+                    stack-label
+                    style="width: 100%; margin-bottom: 10px"
+                  )
+                  q-input(
+                    outlined
+                    v-model="login.password"
+                    hint=""
+                    type="password"
+                    label="Пароль"
+                    stack-label
+                    style="width: 100%"
+                  )
+                  q-btn(
+                    flat
+                    label="Войти"
+                    color="primary"
+                    type="submit"
+                    )
+            q-tab-panel(name="registration")
+              q-card-section(class="row items-center")
+                form(@submit.prevent="registration()" method="post" id="login" style="min-width: 400px")
+                  q-input(
+                    v-model="registration_data.username"
+                    label="Логин"
+                    type="text"
+                    lazy-rules
+                    outlined
+                    stack-label
+                    style="width: 100%; margin-bottom: 10px"
+                  )
+                  q-input(
+                    outlined
+                    v-model="registration_data.password"
+                    hint=""
+                    type="password"
+                    label="Пароль"
+                    stack-label
+                    style="width: 100%"
+                  )
+                  q-input(
+                    outlined
+                    v-model="registration_data.require_password"
+                    hint=""
+                    type="password"
+                    label="Подтвердите пароль"
+                    stack-label
+                    style="width: 100%"
+                  )
+                  q-btn(
+                    flat
+                    label="Регистрация"
+                    color="primary"
+                    type="submit"
+                    )
     q-layout(view="lHh lpR lff" v-else)
       q-header(elevated class="bg-primary text-white" height-hint="98")
         q-toolbar
@@ -87,11 +132,17 @@ export default {
   },
   data () {
     return {
+      tab: 'authorization',
       leftMenu: routes.options.routes,
       dialog: true,
       login: {
         username: '',
         password: '',
+      },
+      registration_data: {
+        username: '',
+        password: '',
+        require_password: ''
       }
     }
   },
@@ -102,6 +153,7 @@ export default {
     }
     axios.interceptors.response.use(
     (response) => {
+      console.log(response, 6666)
       return {code: response.status, data: response.data, message: response.data.response_message}
     },
     (error) => {
@@ -149,6 +201,34 @@ export default {
         } else {
           vm.showNotify('top-right', 'ошибка авторизации', 'negative')
         }
+      })
+    },
+    registration() {
+      const vm = this
+      if (vm.registration_data.password.length < 3) {
+        vm.showNotify('top-right', 'Минимальная длинна пароля 8 символов', 'negative')
+        return
+      }
+      if (vm.registration_data.password !== vm.registration_data.require_password) {
+        vm.showNotify('top-right', 'Пароли не совпадают', 'negative')
+        return
+      }
+      if (vm.registration_data.username.length < 4) {
+        vm.showNotify('top-right', 'Минимальная длина логина 4 символа', 'negative')
+        return
+      }
+      axios.post('/registration/', vm.registration_data).then(response => {
+          if (response.code === 200) {
+            vm.showNotify('top-right', 'Вы успешно зарегистрировались', 'positive')
+            vm.tab = 'authorization'
+            vm.registration_data = {
+              username: '',
+              password: '',
+              require_password: ''
+            }
+          } else {
+            vm.showNotify('top-right', response.message, 'negative')
+          }
       })
     }
   },
