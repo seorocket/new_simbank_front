@@ -77,6 +77,7 @@
 import mixins from "../plugins/general";
 import PopupSendUssd from "../components/PopupSendUssd";
 import PopupSendSms from "../components/PopupSendSms";
+import {mapState} from "vuex";
 
 export default {
   mixins: [mixins],
@@ -87,9 +88,16 @@ export default {
   meta: {
     title: 'GOIP - Линии'
   },
+  computed: {
+    ...mapState([
+      'token',
+    ])
+  },
   data () {
     return {
       submitting: false,
+      chat_socket: null,
+      poll_interval: '',
       columns: [
         {
           name: 'line_id',
@@ -153,6 +161,15 @@ export default {
     removeSIM (sim) {
       const vm = this
       vm.actionRequest(`/sim/${sim}/activate_sim/`, {}, '', 'gateway_lines')
+      // костыль, чтобы избежать косяков из кеша
+      clearInterval(vm.poll_interval)
+      setTimeout(function () {
+        vm.poll_interval = setInterval(function(){
+            vm.chat_socket.send(JSON.stringify({
+                'message': 'get_data'
+            }));
+        }, 10000)
+      }, 10000)
     },
     openSendUssd (type, data) {
       const vm = this
@@ -167,10 +184,67 @@ export default {
       vm.popup.active = vm.popup[type].active = true
       vm.popup[type].scheme.line_id.value = data.line
       vm.popup[type].scheme.sim.value = data.id
+    },
+    openSocket() {
+      const vm = this
+      if (vm.chat_socket !== null) {
+          return
+      }
+      console.log('open Socket')
+      vm.chat_socket = new WebSocket(
+          `${process.env.VUE_APP_ROOT_WS}/gateway_state/?token=${vm.token}`
+      )
+
+      vm.chat_socket.onmessage = function(e) {
+        const data = JSON.parse(e.data)
+        console.log(data)
+        vm.model.gateway_lines.data = data.message
+      }
+
+      vm.chat_socket.onclose = function() {
+          console.log('Socket closed')
+          vm.chat_socket = null
+          clearInterval(vm.poll_interval)
+          if (!document.hidden) {
+            console.log('socket reconnect in 5 sec')
+            setTimeout(vm.openSocket, 5000)
+          }
+      }
+      vm.poll_interval = setInterval(function(){
+          vm.chat_socket.send(JSON.stringify({
+              'message': 'get_data'
+          }));
+      }, 10000)
+    },
+    closeSocket() {
+      const vm = this
+      if (vm.chat_socket.readyState === 1) {
+          vm.chat_socket.close()
+          clearInterval(vm.poll_interval)
+      }
+    },
+    visibilityChange() {
+      const vm = this
+      if (document.hidden) {
+          vm.closeSocket()
+      } else {
+          vm.openSocket()
+      }
     }
   },
   beforeMount () {
-    this.getData('gateway_lines')
+    const vm = this
+    vm.getData('gateway_lines')
+    vm.openSocket()
+    document.addEventListener("visibilitychange", vm.visibilityChange)
+  },
+  beforeDestroy() {
+    const vm = this
+    vm.chat_socket.onclose = function() {console.log('Socket closed')}
+    vm.closeSocket()
+    vm.chat_socket = null
+    clearInterval(vm.poll_interval)
+    document.removeEventListener("visibilitychange", vm.visibilityChange)
   }
 }
 </script>

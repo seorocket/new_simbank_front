@@ -147,13 +147,13 @@ export default {
     }
   },
   created () {
-    axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
+    console.log(process.env.VUE_APP_ROOT_API)
+    axios.defaults.baseURL = process.env.VUE_APP_ROOT_API
     if (this.token) {
       axios.defaults.headers.common.Authorization = `Token ${this.token}`
     }
     axios.interceptors.response.use(
     (response) => {
-      console.log(response, 6666)
       return {code: response.status, data: response.data, message: response.data.response_message}
     },
     (error) => {
@@ -179,6 +179,7 @@ export default {
     logOut () {
       const vm = this
       vm.$store.dispatch('authorize', '')
+      vm.$store.dispatch('user', {})
     },
     authorization() {
       const vm = this
@@ -188,7 +189,6 @@ export default {
           vm.login = {username: '', password: ''}
           vm.$store.dispatch('authorize', response.data.data)
           axios.get(`/clients/${vm.user_id}/`).then(response => {
-            vm.user = response.data
             vm.$store.dispatch('user', response.data)
           })
         } else {
@@ -234,7 +234,6 @@ export default {
   },
   mounted () {
     let vm = this
-    console.log(vm.leftMenu)
     if (vm.user_id) {
       axios.get(`/clients/${vm.user_id}/`).then(response => {
         vm.$store.dispatch('user', response.data)
