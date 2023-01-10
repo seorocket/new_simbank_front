@@ -24,7 +24,7 @@
             q-td(key="name" :props="props" v-html="props.row.name")
             q-td(key="server" :props="props" v-if="props.row.clo_server === true && props.row.status === false")
               q-spinner-gears(size="30px" style="margin-right: 15px")
-              span Сервер создается
+              span {{ props.row.install_progress }}
             q-td(key="server" :props="props" v-html="props.row.server" v-else)
             q-td(key="datetime" :props="props" v-html="props.row.datetime")
             q-td(key="actions" :props="props" v-if="props.row.clo_server === true && props.row.status === true")
@@ -136,6 +136,7 @@
 import mixins from "../plugins/general"
 import PopupCreateUpdate from "../components/PopupCreateUpdate"
 import PopupCreateSmsServer from "../components/PopupCreateSmsServer"
+import {mapState} from "vuex";
 
 export default {
   mixins: [mixins],
@@ -143,8 +144,14 @@ export default {
     PopupCreateUpdate,
     PopupCreateSmsServer
   },
+  computed: {
+    ...mapState([
+      'token',
+    ])
+  },
   data () {
     return {
+      chat_socket: null,
       columns_server: [
         { name: 'name', align: 'left', label: 'Имя', field: 'name'},
         { name: 'server', label: 'Адрес', field: 'server', align: 'left'},
@@ -165,7 +172,39 @@ export default {
       ]
     }
   },
+  methods: {
+    openSocket() {
+      const vm = this
+      if (vm.chat_socket !== null) {
+          return
+      }
+      console.log('open Socket')
+      vm.chat_socket = new WebSocket(
+          `${process.env.VUE_APP_ROOT_WS}/server_state/?token=${vm.token}`
+      )
+
+      vm.chat_socket.onmessage = function(e) {
+        vm.model.smb_server.data = [JSON.parse(e.data).message]
+      }
+
+      vm.chat_socket.onclose = function() {
+          console.log('Socket closed')
+          vm.chat_socket = null
+          if (!document.hidden) {
+            console.log('socket reconnect in 5 sec')
+            setTimeout(vm.openSocket, 5000)
+          }
+      }
+    },
+    closeSocket() {
+      const vm = this
+      if (vm.chat_socket.readyState === 1) {
+          vm.chat_socket.close()
+      }
+    }
+  },
   beforeMount () {
+    this.openSocket()
     this.getData('smb_server')
     this.getData('smb')
     this.getData('gateway')
