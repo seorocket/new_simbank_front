@@ -41,13 +41,13 @@
 
 export default {
   name: "PopupCreateSmsServer",
-  props: ['title', 'model', 'data', 'submit'],
+  props: ['title', 'model', 'data', 'submit', 'open_socket', 'close_socket'],
   data() {
     return {}
   },
   methods: {
     createServer () {
-      this.submit('/scheduler/create-clo-server/', {}, 'create_server', 'smb_server')
+      this.submit('/scheduler/create-clo-server/', {}, 'create_server', 'smb_server', true, this.open_socket)
     }
   }
 }

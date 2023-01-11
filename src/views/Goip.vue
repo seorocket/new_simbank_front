@@ -197,7 +197,6 @@ export default {
 
       vm.chat_socket.onmessage = function(e) {
         const data = JSON.parse(e.data)
-        console.log(data)
         vm.model.gateway_lines.data = data.message
       }
 

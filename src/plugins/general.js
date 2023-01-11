@@ -214,7 +214,7 @@ const mixins = {
                 }
             })
         },
-        deleteObject(id, type) {
+        deleteObject (id, type) {
           const vm = this
           axios.delete(`${vm.model[type].url}${id}/`).then(response => {
             if (response.code === 204) {
@@ -227,17 +227,18 @@ const mixins = {
             }
           })
         },
-        showNotify(position, message, color) {
+        showNotify(position, message, color, freeze = false) {
             this.$q.notify({
                 color: color,
                 textColor: 'white',
                 message: message,
                 html: true,
                 position: position,
-                timeout: 3000
+                timeout: freeze ? 180000 : 3000,
+                actions: freeze ? [{ label: 'закрыть', color: 'white', handler: () => {} }] : []
             })
         },
-        actionRequest(url, data, type, callback = '') {
+        actionRequest(url, data, type, callback_data = '', hold_notify = false, callback_function = null) {
             const vm = this
             if (type) {
                 vm.popup[type].submitting = true
@@ -264,10 +265,14 @@ const mixins = {
                 vm.showNotify(
                     'top-right',
                     response.message,
-                    response.code === 200 ? 'positive' : 'negative'
+                    response.code === 200 ? 'positive' : 'negative',
+                    hold_notify
                 )
-                if (callback) {
-                    vm.getData(callback)
+                if (callback_data) {
+                    vm.getData(callback_data)
+                }
+                if (response.code === 200 && callback_function) {
+                    vm[callback_function]()
                 }
             })
             return true

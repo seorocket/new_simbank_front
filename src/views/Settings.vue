@@ -6,7 +6,7 @@
           :ripple="false"
           color="secondary"
           label="Добавить настройки Сервера"
-          v-on:click="openPopup('create_server')"
+          v-on:click="model.smb_server.data.length ? showNotify('top-right', 'У вас уже есть сервер', 'warning') : openPopup('create_server')"
           no-caps
         )
       q-separator
@@ -129,6 +129,8 @@
         :data="popup"
         model="create_server"
         @close="closePopup"
+        open_socket="openSocket"
+        close_socket="closeSocket"
       )
 </template>
 
@@ -185,6 +187,9 @@ export default {
 
       vm.chat_socket.onmessage = function(e) {
         vm.model.smb_server.data = [JSON.parse(e.data).message]
+        if (JSON.parse(e.data).message.status) {
+          vm.closeSocket()
+        }
       }
 
       vm.chat_socket.onclose = function() {
@@ -204,7 +209,6 @@ export default {
     }
   },
   beforeMount () {
-    this.openSocket()
     this.getData('smb_server')
     this.getData('smb')
     this.getData('gateway')
