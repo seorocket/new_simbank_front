@@ -235,7 +235,7 @@ export default {
     const vm = this
     vm.getData('gateway_lines')
     vm.openSocket()
-    // document.addEventListener("visibilitychange", vm.visibilityChange)
+    document.addEventListener("visibilitychange", vm.visibilityChange)
   },
   beforeDestroy() {
     const vm = this
@@ -243,7 +243,7 @@ export default {
     vm.closeSocket()
     vm.chat_socket = null
     clearInterval(vm.poll_interval)
-    // document.removeEventListener("visibilitychange", vm.visibilityChange)
+    document.removeEventListener("visibilitychange", vm.visibilityChange)
   }
 }
 </script>
