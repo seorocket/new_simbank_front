@@ -225,7 +225,7 @@ export default {
     },
     rebootServer (id) {
       const vm = this
-      axios.patch(`/scheduler/${id}/`, {'rebooting': true}).then(response => {
+      axios.post(`/scheduler/${id}/reboot-clo-server/`).then(response => {
         vm.model.smb_server.data = [response.data]
       })
     }
