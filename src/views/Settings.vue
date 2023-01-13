@@ -25,10 +25,15 @@
             q-td(key="server" :props="props" v-if="props.row.clo_server === true && props.row.status === false")
               q-spinner-gears(size="30px" style="margin-right: 15px")
               span {{ props.row.install_progress }}
+            q-td(key="server" :props="props" v-else-if="props.row.clo_server === true && props.row.rebooting === true")
+              q-spinner-gears(size="30px" style="margin-right: 15px")
+              span Сервер перезагружается
             q-td(key="server" :props="props" v-html="props.row.server" v-else)
             q-td(key="datetime" :props="props" v-html="props.row.datetime")
             q-td(key="actions" :props="props" v-if="props.row.clo_server === true && props.row.status === true")
-              q-btn(size="sm" round color="deep-orange" icon="delete" @click="deleteItem(props.row.id, 'smb_server')")
+              q-btn(size="sm" round color="deep-orange" icon="delete" style="margin-right: 10px;" @click="deleteItem(props.row.id, 'smb_server')")
+              q-btn(size="sm" round color="primary" icon="refresh" @click="rebootServer(props.row.id)" v-if="!props.row.rebooting")
+                q-tooltip(anchor="top middle" self="bottom middle" :offset="[10, 10]") Перезагрузить сервер
             q-td(key="actions" :props="props" v-else-if="props.row.clo_server === false")
               q-btn(
                 size="sm"
@@ -129,8 +134,6 @@
         :data="popup"
         model="create_server"
         @close="closePopup"
-        open_socket="openSocket"
-        close_socket="closeSocket"
       )
 </template>
 
@@ -139,6 +142,7 @@ import mixins from "../plugins/general"
 import PopupCreateUpdate from "../components/PopupCreateUpdate"
 import PopupCreateSmsServer from "../components/PopupCreateSmsServer"
 import {mapState} from "vuex";
+import axios from "axios";
 
 export default {
   mixins: [mixins],
@@ -174,8 +178,20 @@ export default {
       ]
     }
   },
+  watch: {
+    'model.smb_server.data'(event) {
+      if (event.length) {
+        if (event[0].clo_server === true && event[0].status === false) {
+          this.openSocket('status')
+        }
+        if (event[0].clo_server === true && event[0].rebooting === true) {
+          this.openSocket('status')
+        }
+      }
+    }
+  },
   methods: {
-    openSocket() {
+    openSocket(close_on) {
       const vm = this
       if (vm.chat_socket !== null) {
           return
@@ -187,7 +203,7 @@ export default {
 
       vm.chat_socket.onmessage = function(e) {
         vm.model.smb_server.data = [JSON.parse(e.data).message]
-        if (JSON.parse(e.data).message.status) {
+        if (JSON.parse(e.data).message[close_on]) {
           vm.closeSocket()
         }
       }
@@ -206,6 +222,12 @@ export default {
       if (vm.chat_socket.readyState === 1) {
           vm.chat_socket.close()
       }
+    },
+    rebootServer (id) {
+      const vm = this
+      axios.patch(`/scheduler/${id}/`, {'rebooting': true}).then(response => {
+        vm.model.smb_server.data = [response.data]
+      })
     }
   },
   beforeMount () {
@@ -215,4 +237,3 @@ export default {
   }
 }
 </script>
-
