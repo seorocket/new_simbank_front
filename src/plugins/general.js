@@ -67,6 +67,11 @@ const mixins = {
                     url: '/clients/',
                     data: [],
                     name: 'Клиенты'
+                },
+                transaction: {
+                    url: '/transactions/',
+                    data: [],
+                    name: 'Транзакции'
                 }
             },
             settings: {

@@ -8,6 +8,7 @@ import SmsCollector from '../views/SmsCollector.vue'
 import CallCollector from '../views/CallCollector.vue'
 import GetApi from '../views/GetApi.vue'
 import GetFaq from '../views/GetFaq.vue'
+import Transactions from '../views/Transactions.vue'
 import store from '../store/index.js'
 
 
@@ -17,7 +18,7 @@ const routes = [
   {
     path: '',
     name: 'GOIP',
-    caption: 'Channels',
+    caption: 'Линии',
     icon: 'goip.png',
     css: '',
     show: false,
@@ -29,7 +30,7 @@ const routes = [
   {
     path: '/go-ip',
     name: 'GOIP',
-    caption: 'Channels',
+    caption: 'Линии',
     icon: 'goip.png',
     css: '',
     show: true,
@@ -115,6 +116,18 @@ const routes = [
     },
     component: Employees
   },
+  {
+    path: '/transactions',
+    name: 'TRANSACTIONS',
+    caption: 'Операции по балансу',
+    icon: 'coins.png',
+    css: 'width: 80%;',
+    show: true,
+    meta: {
+      roles: ['owner'],
+    },
+    component: Transactions
+  }
 ]
 
 const router = new VueRouter({
