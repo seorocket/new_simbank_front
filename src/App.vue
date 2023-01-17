@@ -191,7 +191,7 @@ export default {
           vm.login = {username: '', password: ''}
           vm.$store.dispatch('authorize', response.data.data)
           axios.get(`/clients/${vm.user_id}/`).then(response => {
-            if (typeof(response.data) == 'object' && response.status === 200) {
+            if (typeof(response.data) == 'object' && response.code === 200) {
               vm.$store.dispatch('user', response.data)
             }
           })
