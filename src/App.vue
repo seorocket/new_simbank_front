@@ -163,6 +163,7 @@ export default {
         delete axios.defaults.headers.common["Authorization"]
         vm.showNotify('top-right', error.response.data.response_message, 'negative')
       }
+      console.log(error.response)
       return {code: error.response.status, data: error.response.data, message: error.response.data.response_message}
     })
   },
