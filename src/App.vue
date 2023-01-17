@@ -161,6 +161,7 @@ export default {
       if (error.response.status === 401) {
         vm.$store.dispatch('authorize', '')
         delete axios.defaults.headers.common["Authorization"]
+        vm.showNotify('top-right', error.response.data.response_message, 'negative')
       }
       return {code: error.response.status, data: error.response.data, message: error.response.data.response_message}
     })
@@ -189,7 +190,9 @@ export default {
           vm.login = {username: '', password: ''}
           vm.$store.dispatch('authorize', response.data.data)
           axios.get(`/clients/${vm.user_id}/`).then(response => {
-            vm.$store.dispatch('user', response.data)
+            if (typeof(response.data) == 'object' && response.status === 200) {
+              vm.$store.dispatch('user', response.data)
+            }
           })
         } else {
           vm.showNotify('top-right', response.data.response_message, 'negative')
@@ -236,7 +239,9 @@ export default {
     let vm = this
     if (vm.user_id) {
       axios.get(`/clients/${vm.user_id}/`).then(response => {
-        vm.$store.dispatch('user', response.data)
+        if (typeof(response.data) == 'object' && response.code === 200) {
+          vm.$store.dispatch('user', response.data)
+        }
       })
     }
   }

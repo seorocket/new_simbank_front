@@ -13,48 +13,6 @@ import store from '../store/index.js'
 
 Vue.use(VueRouter)
 
-
-        // {
-        //   name: 'GOIP',
-        //   caption: 'Channels',
-        //   icon: 'goip.png',
-        //   link: 'go-ip',
-        //   css: '',
-        //   for_superuser: false
-        // },
-        // {
-        //   name: 'SIM',
-        //   caption: 'Список Sim-Карт',
-        //   icon: 'sim.png',
-        //   link: 'sim-list',
-        //   css: 'padding: 0 5px;',
-        //   for_superuser: false
-        // },
-        // {
-        //   name: 'SMS COLLECTOR',
-        //   caption: 'Весь список СМС',
-        //   icon: 'get_sms.png',
-        //   link: 'sms-collector',
-        //   css: 'padding-left: 15px;',
-        //   for_superuser: false
-        // },
-        // {
-        //   name: 'SETTINGS',
-        //   caption: 'Настройки',
-        //   icon: 'simbank.png',
-        //   link: 'settings',
-        //   css: '',
-        //   for_superuser: true
-        // },
-        // {
-        //   name: 'EMPLOYEES',
-        //   caption: 'Сотрудники',
-        //   icon: 'user.png',
-        //   link: 'employess',
-        //   css: 'width: 80%;',
-        //   for_superuser: true
-        // }
-
 const routes = [
   {
     path: '',
@@ -164,6 +122,7 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
+  console.log(store.state.user)
   if (to.meta.roles.includes(store.state.user.role) || !Object.keys(store.state.user).length) {
     next()
   } else {

@@ -51,7 +51,7 @@
           color="secondary"
           label="Добавить настройки симбанка"
           no-caps
-          v-on:click="model.smb_server.data.length ? openPopup('smb') : showNotify('top-right', `Создайте сервер для добавления настроек симбанка или GOIP шлюза`, 'warning')"
+          v-on:click="checkCreateSMBGOIP"
         )
       q-separator
       q-card-section
@@ -77,7 +77,7 @@
           color="secondary"
           label="Добавить настройки GOIP"
           no-caps
-          v-on:click="model.smb_server.data.length ? openPopup('gateway') : showNotify('top-right', `Создайте сервер для добавления настроек симбанка или GOIP шлюза`, 'warning')"
+          v-on:click="checkCreateSMBGOIP"
         )
       q-separator
       q-card-section
@@ -191,6 +191,18 @@ export default {
     }
   },
   methods: {
+    checkCreateSMBGOIP(){
+      const vm = this
+      if (vm.model.smb_server.data.length) {
+        if ( vm.model.smb_server.data[0].status && !vm.model.smb_server.data[0].rebooting) {
+          vm.openPopup('smb')
+        } else {
+          vm.showNotify('top-right', `Сервер подготавливается, подождите`, 'warning')
+        }
+      } else {
+        vm.showNotify('top-right', `Создайте СМС Сервер`, 'warning')
+      }
+    },
     openSocket(close_on) {
       const vm = this
       if (vm.chat_socket !== null) {
@@ -213,7 +225,7 @@ export default {
           vm.chat_socket = null
           if (!document.hidden) {
             console.log('socket reconnect in 5 sec')
-            setTimeout(vm.openSocket, 5000)
+            setTimeout(vm.openSocket(close_on), 5000)
           }
       }
     },
