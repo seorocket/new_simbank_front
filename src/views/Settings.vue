@@ -51,7 +51,7 @@
           color="secondary"
           label="Добавить настройки симбанка"
           no-caps
-          v-on:click="checkCreateSMBGOIP"
+          v-on:click="checkCreateSMBGOIP('smb')"
         )
       q-separator
       q-card-section
@@ -77,7 +77,7 @@
           color="secondary"
           label="Добавить настройки GOIP"
           no-caps
-          v-on:click="checkCreateSMBGOIP"
+          v-on:click="checkCreateSMBGOIP('gateway')"
         )
       q-separator
       q-card-section
@@ -191,11 +191,11 @@ export default {
     }
   },
   methods: {
-    checkCreateSMBGOIP(){
+    checkCreateSMBGOIP(type){
       const vm = this
       if (vm.model.smb_server.data.length) {
         if ( vm.model.smb_server.data[0].status && !vm.model.smb_server.data[0].rebooting) {
-          vm.openPopup('smb')
+          vm.openPopup(type)
         } else {
           vm.showNotify('top-right', `Сервер подготавливается, подождите`, 'warning')
         }
