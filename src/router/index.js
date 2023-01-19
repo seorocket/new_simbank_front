@@ -9,6 +9,8 @@ import CallCollector from '../views/CallCollector.vue'
 import GetApi from '../views/GetApi.vue'
 import GetFaq from '../views/GetFaq.vue'
 import Transactions from '../views/Transactions.vue'
+import SuccessRegistration from '../views/SuccessRegistration.vue'
+import FailRegistration from '../views/FailRegistration.vue'
 import store from '../store/index.js'
 
 
@@ -23,7 +25,7 @@ const routes = [
     css: '',
     show: false,
     meta: {
-      roles: ['owner', 'employee'],
+      roles: ['all'],
     },
     component: Goip
   },
@@ -127,6 +129,32 @@ const routes = [
       roles: ['owner'],
     },
     component: Transactions
+  },
+  {
+    path: '/success-registration',
+    name: 'success',
+    caption: 'Успешная регистрация',
+    icon: '',
+    css: '',
+    show: false,
+    meta: {
+      roles: ['all'],
+      for_all: true
+    },
+    component: SuccessRegistration
+  },
+  {
+    path: '/fail-registration',
+    name: 'fail',
+    caption: 'Ошибка при регистрации',
+    icon: '',
+    css: '',
+    show: false,
+    meta: {
+      roles: ['all'],
+      for_all: true
+    },
+    component: FailRegistration
   }
 ]
 
@@ -135,8 +163,7 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  console.log(store.state.user)
-  if (to.meta.roles.includes(store.state.user.role) || !Object.keys(store.state.user).length) {
+  if (to.meta.roles.includes('all') || to.meta.roles.includes(store.state.user.role) || !Object.keys(store.state.user).length) {
     next()
   } else {
     next({'path': '/'})

@@ -1,7 +1,9 @@
 
 <template lang="pug">
   div
-    div(v-if="!token")
+    div(v-if="$route.meta.for_all")
+      router-view
+    div(v-else-if="!token")
       q-dialog(
         v-model="dialog"
         persistent
@@ -53,6 +55,15 @@
                   q-input(
                     v-model="registration_data.username"
                     label="Логин"
+                    type="text"
+                    lazy-rules
+                    outlined
+                    stack-label
+                    style="width: 100%; margin-bottom: 10px"
+                  )
+                  q-input(
+                    v-model="registration_data.email"
+                    label="Почта"
                     type="text"
                     lazy-rules
                     outlined
@@ -141,6 +152,7 @@ export default {
       },
       registration_data: {
         username: '',
+        email: '',
         password: '',
         require_password: ''
       }
@@ -209,6 +221,18 @@ export default {
     },
     registration() {
       const vm = this
+      if (vm.registration_data.username.length < 4) {
+        vm.showNotify('top-right', 'Минимальная длина логина 4 символа', 'negative')
+        return
+      }
+      if (!vm.registration_data.email) {
+        vm.showNotify('top-right', 'Укажите Email', 'negative')
+        return
+      }
+      if (!vm.check_email(vm.registration_data.email)) {
+        vm.showNotify('top-right', 'Введенный Email не валиден', 'negative')
+        return
+      }
       if (vm.registration_data.password.length < 3) {
         vm.showNotify('top-right', 'Минимальная длинна пароля 8 символов', 'negative')
         return
@@ -217,13 +241,9 @@ export default {
         vm.showNotify('top-right', 'Пароли не совпадают', 'negative')
         return
       }
-      if (vm.registration_data.username.length < 4) {
-        vm.showNotify('top-right', 'Минимальная длина логина 4 символа', 'negative')
-        return
-      }
       axios.post('/registration/', vm.registration_data).then(response => {
           if (response.code === 200) {
-            vm.showNotify('top-right', 'Вы успешно зарегистрировались', 'positive')
+            vm.showNotify('top-right', response.data.response_message, 'positive')
             vm.tab = 'authorization'
             vm.registration_data = {
               username: '',
@@ -234,6 +254,13 @@ export default {
             vm.showNotify('top-right', response.message, 'negative')
           }
       })
+    },
+    check_email(email){
+      return String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
     }
   },
   mounted () {
