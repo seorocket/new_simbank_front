@@ -11,6 +11,7 @@ import GetFaq from '../views/GetFaq.vue'
 import Transactions from '../views/Transactions.vue'
 import SuccessRegistration from '../views/SuccessRegistration.vue'
 import FailRegistration from '../views/FailRegistration.vue'
+import TopUpBalance from '../views/TopUpBalance.vue'
 import store from '../store/index.js'
 
 
@@ -155,6 +156,19 @@ const routes = [
       for_all: true
     },
     component: FailRegistration
+  },
+  {
+    path: '/top-up-balance',
+    name: 'top-up-balance',
+    caption: 'Пополнение баланса',
+    icon: '',
+    css: '',
+    show: false,
+    meta: {
+      roles: ['all'],
+      for_all: true
+    },
+    component: TopUpBalance
   }
 ]
 
