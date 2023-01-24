@@ -67,8 +67,8 @@ export default {
   methods: {
     makePayment() {
       const vm = this
-      vm.loading = true
       if (!vm.loading) {
+        vm.loading = true
         axios.post('top-up-balance/', vm.pay_data).then(response => {
           vm.showNotify(
               'top-right',
