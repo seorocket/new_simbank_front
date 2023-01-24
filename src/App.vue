@@ -128,6 +128,14 @@
             q-item-section
               q-item-label Баланс
               q-item-label(caption) {{ user.balance }} руб.
+          q-item(v-if="user.role === 'owner'")
+            router-link(:to="{name: 'top-up-balance'}" class="router-link-active")
+              q-btn(
+                flat
+                label="Пополнить баланс"
+                color="primary"
+                type="submit"
+                )
       q-page-container(style="padding-right: 15px; margin-left: 15px; padding-top: 65px;")
         router-view
 </template>
