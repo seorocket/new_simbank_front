@@ -49,6 +49,13 @@
                     color="primary"
                     type="submit"
                     )
+                  router-link(:to="{name: 'top-up-balance'}" class="router-link-active")
+                    q-btn(
+                      flat
+                      label="Пополнить баланс"
+                      color="primary"
+                      type="submit"
+                      )
             q-tab-panel(name="registration")
               q-card-section(class="row items-center")
                 form(@submit.prevent="registration()" method="post" id="login" style="min-width: 400px")
@@ -277,6 +284,9 @@ export default {
 </script>
 
 <style>
+  .router-link-active {
+    text-decoration: none;
+  }
   .q-tooltip--style{
     font-size: 14px!important;
   }

@@ -12,6 +12,8 @@ import Transactions from '../views/Transactions.vue'
 import SuccessRegistration from '../views/SuccessRegistration.vue'
 import FailRegistration from '../views/FailRegistration.vue'
 import TopUpBalance from '../views/TopUpBalance.vue'
+import SuccessPayment from '../views/SuccessPayment.vue'
+import FailurePayment from '../views/FailPayment.vue'
 import store from '../store/index.js'
 
 
@@ -169,6 +171,32 @@ const routes = [
       for_all: true
     },
     component: TopUpBalance
+  },
+  {
+    path: '/failure-payment',
+    name: 'failure-payment',
+    caption: 'Ошибка при пополнение баланса',
+    icon: '',
+    css: '',
+    show: false,
+    meta: {
+      roles: ['all'],
+      for_all: true
+    },
+    component: FailurePayment
+  },
+  {
+    path: '/success-payment',
+    name: 'success-payment',
+    caption: 'Успешная оплата',
+    icon: '',
+    css: '',
+    show: false,
+    meta: {
+      roles: ['all'],
+      for_all: true
+    },
+    component: SuccessPayment
   }
 ]
 

@@ -2,7 +2,7 @@
       q-dialog(persistent v-model="dialog")
         q-card(style="width: 400px;")
           q-card-section(class="row items-center" style="justify-content: center;")
-            span(class="q-ml-sm text-h6") Пополнение баланса!
+            span(class="q-ml-sm text-h6") Пополнение баланса
           q-card-section(class="row items-center" style="justify-content: center;")
             q-input(
               v-model="pay_data.username"
@@ -34,6 +34,7 @@
                 class="enter_button"
               )
             q-btn(
+              :loading="loading"
               :ripple="false"
               color="secondary"
               label="Пополнить"
@@ -44,6 +45,8 @@
               style="margin-left: 20px;"
               @click="makePayment()"
             )
+              template(v-slot:loading)
+                q-spinner-facebook
 </template>
 <script>
 import mixins from "../plugins/general";
@@ -53,6 +56,7 @@ export default {
   mixins: [mixins],
   data () {
     return {
+      loading: false,
       dialog: true,
       pay_data: {
         username: '',
@@ -63,15 +67,18 @@ export default {
   methods: {
     makePayment() {
       const vm = this
-      axios.post('top-up-balance/', vm.pay_data).then(response => {
-        vm.showNotify(
-            'top-right',
-            response.message,
-            response.code === 200 ? 'positive' : 'negative'
-        )
-        console.log(response.data, response.data.data.url)
-        window.location.href = response.data.data.url
-      })
+      vm.loading = true
+      if (!vm.loading) {
+        axios.post('top-up-balance/', vm.pay_data).then(response => {
+          vm.showNotify(
+              'top-right',
+              response.message,
+              response.code === 200 ? 'positive' : 'negative'
+          )
+          console.log(response.data, response.data.data.url)
+          window.location.href = response.data.data.url
+        })
+      }
     }
   }
 }
