@@ -77,7 +77,9 @@ export default {
           )
           vm.loading = false
           console.log(response.data, response.data.data.url)
-          window.location.href = response.data.data.url
+          if (response.data.data.url && response.code === 200) {
+            window.location.href = response.data.data.url
+          }
         })
       }
     }
