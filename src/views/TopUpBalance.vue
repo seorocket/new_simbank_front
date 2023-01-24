@@ -75,6 +75,7 @@ export default {
               response.message,
               response.code === 200 ? 'positive' : 'negative'
           )
+          vm.loading = false
           console.log(response.data, response.data.data.url)
           window.location.href = response.data.data.url
         })
