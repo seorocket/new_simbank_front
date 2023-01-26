@@ -51,6 +51,7 @@
 <script>
 import mixins from "../plugins/general";
 import axios from 'axios'
+import { mapState } from 'vuex'
 
 export default {
   mixins: [mixins],
@@ -63,6 +64,12 @@ export default {
         value: 500
       }
     }
+  },
+  computed: {
+    ...mapState([
+      'user_id',
+      'user'
+    ])
   },
   methods: {
     makePayment() {
@@ -82,6 +89,11 @@ export default {
           }
         })
       }
+    }
+  },
+  mounted() {
+    if (this.user) {
+      this.pay_data.username = this.user.username
     }
   }
 }

@@ -24,7 +24,7 @@ const routes = [
     path: '',
     name: 'GOIP',
     caption: 'Линии',
-    icon: 'goip.png',
+    icon: 'settings_input_antenna',
     css: '',
     show: false,
     meta: {
@@ -36,7 +36,7 @@ const routes = [
     path: '/go-ip',
     name: 'GOIP',
     caption: 'Линии',
-    icon: 'goip.png',
+    icon: 'settings_input_antenna',
     css: '',
     show: true,
     meta: {
@@ -48,7 +48,7 @@ const routes = [
     path: '/sim-list',
     name: 'SIM',
     caption: 'Список Sim-Карт',
-    icon: 'sim.png',
+    icon: 'sim_card',
     css: 'padding: 0 5px;',
     show: true,
     meta: {
@@ -59,7 +59,7 @@ const routes = [
   {
     path: '/get-api',
     name: 'Get API',
-    icon: 'source',
+    icon: 'chat',
     show: false,
     meta: {
       roles: ['owner'],
@@ -80,8 +80,7 @@ const routes = [
     path: '/sms-collector',
     name: 'SMS COLLECTOR',
     caption: 'Весь список СМС',
-    icon: 'get_sms.png',
-    css: 'padding-left: 15px;',
+    icon: 'chat',
     show: true,
     meta: {
       roles: ['owner', 'employee'],
@@ -102,7 +101,7 @@ const routes = [
     path: '/settings',
     name: 'SETTINGS',
     caption: 'Настройки',
-    icon: 'simbank.png',
+    icon: 'settings',
     show: true,
     meta: {
       roles: ['owner'],
@@ -113,8 +112,7 @@ const routes = [
     path: '/employess',
     name: 'EMPLOYEES',
     caption: 'Сотрудники',
-    icon: 'user.png',
-    css: 'width: 80%;',
+    icon: 'group',
     show: true,
     meta: {
       roles: ['owner'],
@@ -125,8 +123,7 @@ const routes = [
     path: '/transactions',
     name: 'TRANSACTIONS',
     caption: 'Операции по балансу',
-    icon: 'coins.png',
-    css: 'width: 80%;',
+    icon: 'price_check',
     show: true,
     meta: {
       roles: ['owner'],
