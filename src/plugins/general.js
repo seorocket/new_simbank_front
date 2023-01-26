@@ -72,7 +72,17 @@ const mixins = {
                     url: '/transactions/',
                     data: [],
                     name: 'Транзакции'
-                }
+                },
+                ticket: {
+                    url: '/ticket/',
+                    data: [],
+                    name: 'Тикеты'
+                },
+                ticket_message: {
+                    url: '/ticket-message/',
+                    data: [],
+                    name: 'Сообщения тикетов'
+                },
             },
             settings: {
                 smb: [],
@@ -181,11 +191,24 @@ const mixins = {
                     update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.change_password))
                 },
+                ticket: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.ticket)),
+                    success_message: 'Заявка создана'
+                },
+                ticket_message: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.ticket_message))
+                },
             }
         }
     },
     methods: {
-        createObject: function (data, type, update= false) {
+        createObject: function (data, type, update= false, message = '', filter_return = '') {
             const vm = this
             vm.popup[type].submitting = true
             const method = update ? 'patch' : 'post'
@@ -201,8 +224,12 @@ const mixins = {
             axios[method](url, new_data).then(response => {
                 vm.popup[type].submitting = false
                 if ([200, 201].indexOf(response.code) > -1 ) {
-                    vm.getData(type)
-                    vm.showNotify('top-right', update ? 'Данные обновлены' : 'Настройки добавлены!', 'positive')
+                        vm.getData(type, filter_return)
+                    if (message) {
+                        vm.showNotify('top-right', message, 'positive')
+                    } else {
+                        vm.showNotify('top-right', update ? 'Данные обновлены' : 'Настройки добавлены!', 'positive')
+                    }
                     vm.popup.active = vm.popup[type].active = false
                     vm.popup[type].update = false
                     vm.popup[type].scheme = JSON.parse(JSON.stringify(schemes[type]))
@@ -291,8 +318,8 @@ const mixins = {
                 url = params ? `${vm.model[type].url}?${params}` : vm.model[type].url
             }
             if (id) {
-                axios.get(url).then(response => {
-                    return response.data.data
+                return axios.get(url).then(response => {
+                    return response.data
                 })
             } else {
                 axios.get(url).then(response => {

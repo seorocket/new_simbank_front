@@ -23,16 +23,16 @@
               style="width: 100%; margin-bottom: 10px"
             )
           q-card-section(class="row items-center" style="justify-content: center;")
-            router-link(:to="{name: 'GOIP'}")
-              q-btn(
-                :ripple="false"
-                color="primary"
-                label="Назад"
-                no-caps
-                size="15px"
-                upper
-                class="enter_button"
-              )
+            q-btn(
+              :ripple="false"
+              color="primary"
+              label="Назад"
+              no-caps
+              size="15px"
+              upper
+              class="enter_button"
+              @click="$router.go(-1)"
+            )
             q-btn(
               :loading="loading"
               :ripple="false"

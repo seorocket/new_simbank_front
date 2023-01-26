@@ -1,7 +1,7 @@
 <template lang="pug">
   q-card(v-if="data.active")
     q-card-section(class="row items-center")
-      span(class="q-ml-sm text-h6") {{ data.update ? 'Изменить' : 'Добавить' }} {{ title }}
+      span(class="q-ml-sm text-h6") {{ data.update ? 'Изменить' : 'Создать' }} {{ title }}
     q-card-section(class="row items-center")
       template(v-for="field in data.scheme")
         q-select(
@@ -23,11 +23,21 @@
           stack-label
           style="width: 100%; margin-bottom: 10px"
         )
+        q-input(
+          v-if="field.type === 'text'"
+          v-model="field.value"
+          :label="field.label"
+          type="textarea"
+          lazy-rules
+          outlined
+          stack-label
+          style="width: 100%; margin-bottom: 10px"
+        )
       q-btn(
         flat
-        :label="data.update ? 'Изменить' : 'Добавить'"
+        :label="data.update ? 'Изменить' : 'Создать'"
         color="primary"
-        @click="submit(data.scheme, model, data.update)"
+        @click="submit(data.scheme, model, data.update, data.success_message)"
         )
       q-btn(
         flat

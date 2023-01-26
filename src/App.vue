@@ -113,7 +113,7 @@
             img(src="https://simbank.pro/static/media/logo.3a24e86a.svg" style="display: table; margin: 0 auto;")
           LeftMenuLink(
             v-for="item in leftMenu"
-            v-if="item.show && item.meta.roles.includes(user.role)"
+            v-if="item.show && (item.meta.roles.includes(user.role) || item.meta.roles.includes('all'))"
             v-bind:icon="item.icon"
             v-bind:name="item.name"
             v-bind:link="item.path"
@@ -128,14 +128,6 @@
             q-item-section
               q-item-label Баланс
               q-item-label(caption) {{ user.balance }} руб.
-          q-item(v-if="user.role === 'owner'")
-            router-link(:to="{name: 'top-up-balance'}" class="router-link-active")
-              q-btn(
-                flat
-                label="Пополнить баланс"
-                color="primary"
-                type="submit"
-                )
       q-page-container(style="padding-right: 15px; margin-left: 15px; padding-top: 65px;")
         router-view
 </template>

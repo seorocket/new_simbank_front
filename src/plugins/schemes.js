@@ -181,6 +181,42 @@ const schemes = {
             type: 'hidden'
         }
     },
+    ticket: {
+        name: {
+            value: '',
+            type: 'input',
+            label: 'Тема'
+        },
+        message: {
+            value: '',
+            type: 'text',
+            label: 'Сообщение'
+        },
+        resolved: {
+            value: false,
+            type: 'hidden'
+        },
+        client: {
+            value: 1,
+            label: 'Клиент',
+            type: 'hidden'
+        },
+    },
+    ticket_message: {
+        message: {
+            value: '',
+            type: 'text',
+            label: 'Сообщение'
+        },
+        ticket: {
+            value: '',
+            type: 'hidden'
+        },
+        is_admin: {
+            value: false,
+            type: 'hidden'
+        }
+    },
     share_lines: {},
     share_slots: {},
     create_server: {}
