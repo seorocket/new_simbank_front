@@ -13,6 +13,7 @@ import SuccessPayment from '../views/SuccessPayment.vue'
 import FailurePayment from '../views/FailPayment.vue'
 import Support from '../views/Support.vue'
 import SupportDetail from '../views/SupportDetail.vue'
+import ApiDocumentation from '../views/ApiDocumentation'
 import store from '../store/index.js'
 
 
@@ -183,6 +184,18 @@ const routes = [
       for_all: true
     },
     component: SuccessPayment
+  },
+  {
+    path: '/api-documentation',
+    name: 'API',
+    caption: 'Документация',
+    icon: 'article',
+    css: '',
+    show: true,
+    meta: {
+      roles: ['all'],
+    },
+    component: ApiDocumentation
   }
 ]
 
