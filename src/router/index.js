@@ -5,6 +5,7 @@ import Sim from '../views/Sim.vue'
 import Employees from '../views/Employees.vue'
 import Settings from '../views/Settings.vue'
 import SmsCollector from '../views/SmsCollector.vue'
+import CallCollector from '../views/CallCollector.vue'
 import Transactions from '../views/Transactions.vue'
 import SuccessRegistration from '../views/SuccessRegistration.vue'
 import FailRegistration from '../views/FailRegistration.vue'
@@ -66,6 +67,17 @@ const routes = [
       roles: ['owner', 'employee'],
     },
     component: SmsCollector
+  },
+  {
+    path: '/call-collector',
+    name: 'CALL COLLECTOR',
+    caption: 'Cписок входящих звонков',
+    icon: 'phone_callback',
+    show: true,
+    meta: {
+      roles: ['owner', 'employee'],
+    },
+    component: CallCollector
   },
   {
     path: '/settings',

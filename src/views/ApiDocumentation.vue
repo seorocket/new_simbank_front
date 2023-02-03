@@ -141,6 +141,27 @@
           |        "phone": str
           |    }
           |]
+        // Получение Входящих звонков
+        h2 Получение Входящих звонков
+        p Получить все входящие звонки, по указанным диапазонам дат
+        code
+          span.code GET
+          | /api/scheduler/get_all_call/?start=YYYY-mm-dd HH:MM:SS&end=YYYY-mm-dd HH:MM:SS
+        p Обязательные параметры:
+        pre
+          | Входные данные:
+          | start - Пример: 2020-01-01 00:00:00
+          | end - Пример: 2020-01-01 23:59:59
+        p Пример ответа:
+        pre
+          |[
+          |    {
+          |        "line_id": str,
+          |        "datetime": datetime,
+          |        "number": str,
+          |        "sim_name": str
+          |    }
+          |]
 </template>
 
 <script>

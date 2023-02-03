@@ -53,6 +53,11 @@ const mixins = {
                     data: [],
                     name: 'Список СМС'
                 },
+                call: {
+                    url: '/scheduler/get_all_call/',
+                    data: [],
+                    name: 'Список входящих звонков'
+                },
                 gateway_lines: {
                     url: '/gateway/state/',
                     data: [],

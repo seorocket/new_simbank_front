@@ -6,10 +6,8 @@ const schemes = {
             type: 'hidden'
         },
         smb_server: {
-            value: {'label': '', 'value': ''},
-            create_only: false,
-            type: 'select',
-            options: 'smb_server',
+            value: '1',
+            type: 'hidden',
             label: 'Укажите Sheduler'
         },
         goip_id: {
@@ -65,9 +63,8 @@ const schemes = {
             label: 'Укажите пароль симбанка'
         },
         smb_server: {
-            value: {'label': '', 'value': ''},
-            type: 'select',
-            options: 'smb_server',
+            value: '1',
+            type: 'hidden',
             label: 'Укажите Sheduler'
         },
         smb_type: {
@@ -109,22 +106,11 @@ const schemes = {
             type: 'input',
             label: 'Укажите номер сим-карты'
         },
-        smb_slot: {
-            value: '',
-            type: 'input',
-            label: 'Номер слота симбанка, в который вставлена Сим'
-        },
         operator: {
             value: {'label': '', 'value': ''},
             type: 'select',
             options: 'operator',
             label: 'Укажите оператора'
-        },
-        smb: {
-            value: {'label': '', 'value': ''},
-            type: 'select',
-            options: 'smb',
-            label: 'Укажите SIMBANK'
         }
     },
     activate_sim: {

@@ -42,7 +42,7 @@
                   @click="openSendUssd('send_ussd', {line: props.row.line_id, sim: props.row.id})"
                 )
                 q-btn(
-                  v-if="props.row.id"
+                  v-if="props.row.id && !user.goip_mode"
                   size="xs"
                   color="secondary"
                   label="Отключить"
@@ -91,6 +91,7 @@ export default {
   computed: {
     ...mapState([
       'token',
+      'user'
     ])
   },
   data () {
