@@ -39,7 +39,7 @@ const schemes = {
         username: {
             value: '',
             type: 'input',
-            label: 'Логин сотрудника'
+            label: 'Логин сотрудника (создается с приставкой "login_")'
         },
         password: {
             value: '',

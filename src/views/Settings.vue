@@ -205,7 +205,7 @@ export default {
     },
     openSocket(close_on) {
       const vm = this
-      if (vm.chat_socket !== null) {
+      if (vm.chat_socket) {
           return
       }
       console.log('open Socket')
