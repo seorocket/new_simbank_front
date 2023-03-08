@@ -43,15 +43,22 @@
                     stack-label
                     style="width: 100%"
                   )
+                  div(
+                    style="margin: -15px 0 10px 0"
+                  )
+                    router-link(:to="{name: 'Reset password'}" style="text-decoration: none;")
+                      a(
+                        href="#"
+                        style="color: var(--q-color-primary) !important; text-decoration: none;"
+                      ) Забыли пароль?
                   q-btn(
-                    flat
                     label="Войти"
                     color="primary"
                     type="submit"
-                    )
+                    style="margin-right: 10px;"
+                  )
                   router-link(:to="{name: 'top-up-balance'}" class="router-link-active")
                     q-btn(
-                      flat
                       label="Пополнить баланс"
                       color="primary"
                       type="submit"
@@ -96,7 +103,6 @@
                     style="width: 100%"
                   )
                   q-btn(
-                    flat
                     label="Регистрация"
                     color="primary"
                     type="submit"

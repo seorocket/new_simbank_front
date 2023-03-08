@@ -14,6 +14,7 @@ import SuccessPayment from '../views/SuccessPayment.vue'
 import FailurePayment from '../views/FailPayment.vue'
 import Support from '../views/Support.vue'
 import SupportDetail from '../views/SupportDetail.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 import ApiDocumentation from '../views/ApiDocumentation'
 import store from '../store/index.js'
 
@@ -157,6 +158,19 @@ const routes = [
       for_all: true
     },
     component: SuccessRegistration
+  },
+  {
+    path: '/reset-password',
+    name: 'Reset password',
+    caption: 'Сброс пароля',
+    icon: '',
+    css: '',
+    show: false,
+    meta: {
+      roles: ['all'],
+      for_all: true
+    },
+    component: ResetPassword
   },
   {
     path: '/fail-registration',
