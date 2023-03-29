@@ -57,12 +57,12 @@
                     type="submit"
                     style="margin-right: 10px;"
                   )
-                  router-link(:to="{name: 'top-up-balance'}" class="router-link-active")
-                    q-btn(
-                      label="Пополнить баланс"
-                      color="primary"
-                      type="submit"
-                      )
+                  //router-link(:to="{name: 'top-up-balance'}" class="router-link-active")
+                  //  q-btn(
+                  //    label="Пополнить баланс"
+                  //    color="primary"
+                  //    type="submit"
+                  //    )
                   div(
                     style="margin: 15px 0 10px 0"
                   )
