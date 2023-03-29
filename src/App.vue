@@ -43,14 +43,14 @@
                     stack-label
                     style="width: 100%"
                   )
-                  div(
-                    style="margin: -15px 0 10px 0"
-                  )
-                    router-link(:to="{name: 'Reset password'}" style="text-decoration: none;")
-                      a(
-                        href="#"
-                        style="color: var(--q-color-primary) !important; text-decoration: none;"
-                      ) Забыли пароль?
+                  //div(
+                  //  style="margin: -15px 0 10px 0"
+                  //)
+                  //  router-link(:to="{name: 'Reset password'}" style="text-decoration: none;")
+                  //    a(
+                  //      href="#"
+                  //      style="color: var(--q-color-primary) !important; text-decoration: none;"
+                  //    ) Забыли пароль?
                   q-btn(
                     label="Войти"
                     color="primary"
@@ -63,6 +63,16 @@
                       color="primary"
                       type="submit"
                       )
+                  div(
+                    style="margin: 15px 0 10px 0"
+                  )
+                    span Это новая версия simbank.pro
+                    br
+                    span чтобы переидти на старую нажмите на
+                    a(
+                      href="https://old.simbank.pro"
+                      style="color: var(--q-color-primary) !important; text-decoration: none; margin-left: 5px;"
+                    ) ссылку
             q-tab-panel(name="registration")
               q-card-section(class="row items-center")
                 form(@submit.prevent="registration()" method="post" id="login" style="min-width: 400px")
