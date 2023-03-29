@@ -74,7 +74,7 @@
                       style="color: var(--q-color-primary) !important; text-decoration: none; margin-left: 5px;"
                     ) ссылку
                     br
-                    span За новыми паролями обратитесь к администартору
+                    span За новыми доступами обратитесь к администартору
             q-tab-panel(name="registration")
               q-card-section(class="row items-center")
                 form(@submit.prevent="registration()" method="post" id="login" style="min-width: 400px")
