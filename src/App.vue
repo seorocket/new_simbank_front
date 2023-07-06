@@ -123,6 +123,24 @@
       q-header(elevated class="bg-primary text-white" height-hint="98")
         q-toolbar
           q-btn(dense flat round icon="menu" class="mobile-hide"  @click="$store.commit('turnLeftDrawer', 'miniStateDrawerL')")
+          <!-- mobile menu -->
+          div(class="q-pa-md mobile-only")
+            q-btn(color="primary" icon="menu")
+              q-menu(persistent auto-close)
+                q-list(style="width: calc( 100vw - 60px);")
+                  q-item(
+                    clickable
+                    v-ripple
+                    to="item.path"
+                    v-for="item in leftMenu"
+                    v-if="item.show && (item.meta.roles.includes(user.role) || item.meta.roles.includes('all'))"
+                  )
+                    q-item-section(avatar)
+                      q-item-section(avatar style="padding: 0; display: flex; align-items: center; min-width: auto;")
+                        q-icon(:name="item.icon" size="25px" style="color: #333;")
+                    q-item-section {{ item.name }}
+                      q-item-label {{ item.caption }}
+          <!-- /mobile menu -->
           q-toolbar-title(style="text-align: center;") {{ $route.name }}
           q-icon(name="power_settings_new" @click="logOut()")
       q-drawer(show-if-above :mini="miniStateDrawerL" side="left" bordered )
@@ -137,7 +155,7 @@
             v-bind:link="item.path"
             v-bind:caption="item.caption"
             v-bind:css="item.css"
-           )
+          )
           q-item
             q-item-section
               q-item-label Аккаунт
@@ -307,5 +325,14 @@ export default {
   }
   .q-tooltip--style{
     font-size: 14px!important;
+  }
+  .q-item__label {
+    font-size: 12px;
+    color: #777171;
+  }
+  @media screen and (max-width: 768px) {
+    .q-item__section--avatar {
+      min-width: auto!important;
+    }
   }
 </style>
