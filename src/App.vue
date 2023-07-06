@@ -129,10 +129,10 @@
               q-menu(persistent auto-close)
                 q-list(style="width: calc( 100vw - 60px);")
                   q-item(
+                    v-for="item in leftMenu"
                     clickable
                     v-ripple
-                    to="item.path"
-                    v-for="item in leftMenu"
+                    :to="item.path"
                     v-if="item.show && (item.meta.roles.includes(user.role) || item.meta.roles.includes('all'))"
                   )
                     q-item-section(avatar)

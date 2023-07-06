@@ -2,7 +2,7 @@
   div
     q-card
       q-card-actions
-        q-input(filled label="Дата от" v-model="filter.start" style="margin-right: 10px")
+        q-input(filled label="Дата от" v-model="filter.start" style="margin-right: 10px" class="time_input")
           template(v-slot:prepend)
             q-icon(name="event" class="cursor-pointer")
               q-popup-proxy(transition-show="scale" transition-hide="scale")
@@ -17,7 +17,7 @@
                   div(class="row items-center justify-end")
                     q-btn(v-close-popup label="Close" color="primary" flat)
 
-        q-input(filled label="Дата до" v-model="filter.end" style="margin-right: 10px")
+        q-input(filled label="Дата до" v-model="filter.end" style="margin-right: 10px" class="time_input")
           template(v-slot:prepend)
             q-icon(name="event" class="cursor-pointer")
               q-popup-proxy(transition-show="scale" transition-hide="scale")
@@ -32,7 +32,7 @@
                   div(class="row items-center justify-end")
                     q-btn(v-close-popup label="Close" color="primary" flat)
 
-        q-btn(label="Применить" color="primary" :disabled="!filter.start || !filter.end" v-on:click="filterByDates()")
+        q-btn(label="Применить" color="primary" :disabled="!filter.start || !filter.end" v-on:click="filterByDates()" class="time_input")
 
       q-separator
       q-card-section
@@ -158,5 +158,8 @@ export default {
     border-radius: 50%;
     background: red;
     display: inline-block;
+  }
+  .time_input {
+    margin: 5px auto!important;
   }
 </style>
