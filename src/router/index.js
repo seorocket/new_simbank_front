@@ -9,7 +9,7 @@ import CallCollector from '../views/CallCollector.vue'
 import Transactions from '../views/Transactions.vue'
 import SuccessRegistration from '../views/SuccessRegistration.vue'
 import FailRegistration from '../views/FailRegistration.vue'
-import TopUpBalance from '../views/TopUpBalance.vue'
+// import TopUpBalance from '../views/TopUpBalance.vue'
 import SuccessPayment from '../views/SuccessPayment.vue'
 import FailurePayment from '../views/FailPayment.vue'
 import Support from '../views/Support.vue'
@@ -135,17 +135,17 @@ const routes = [
     },
     component: SupportDetail
   },
-  {
-    path: '/top-up-balance',
-    name: 'TOP UP',
-    caption: 'Пополнение баланса',
-    icon: 'payments',
-    show: true,
-    meta: {
-      roles: ['all'],
-    },
-    component: TopUpBalance
-  },
+  // {
+  //   path: '/top-up-balance',
+  //   name: 'TOP UP',
+  //   caption: 'Пополнение баланса',
+  //   icon: 'payments',
+  //   show: true,
+  //   meta: {
+  //     roles: ['all'],
+  //   },
+  //   component: TopUpBalance
+  // },
   {
     path: '/success-registration',
     name: 'success',
