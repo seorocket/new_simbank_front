@@ -36,8 +36,10 @@
               )
 
             q-td(key="smb" :props="props")
+              div {{props.row.slots_lines}}
               div(v-for="item in props.row.smb_slots" class="item_chips")
-                span(class="chips_title") {{ item.name }}
+                span(class="chips_title") {{ item.name }}:
+                span(v-html="item.data.join(', ')")
               q-btn(
                 v-if="props.row.id"
                 size="xs"
@@ -46,6 +48,8 @@
                 style="margin-right: 10px;"
                 @click="openShareSlots(props.row)"
               )
+
+
             q-td(key="actions" :props="props")
               q-btn(
                 v-if="props.row.id"
@@ -186,8 +190,14 @@ export default {
     openShareSlots(item) {
       const vm = this
       vm.edit_user_id = item.id
-      vm.user_slots_data = []
-      vm.user_slots_data = item.smb_slots.map(item => item.data)
+      vm.user_slots_data = {}
+      for(let i in vm.model.smb.data) {
+        // добавляем через $set чтобы элементы были реактивные
+        vm.$set(vm.user_slots_data, vm.model.smb.data[i].name, [])
+      }
+      for (let i in item.smb_slots) {
+        vm.user_slots_data[item.smb_slots[i].name] = item.smb_slots[i].data
+      }
       vm.popup.active = vm.popup.share_slots.active = true
     },
     openChangePassword (item) {
