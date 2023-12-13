@@ -100,6 +100,20 @@ const schemes = {
             type: 'hidden'
         }
     },
+    client: {
+        value: {
+            value: '',
+            type: 'input',
+            label: 'Укажите сумму пополнения'
+        }
+    },
+    transaction: {
+        value: {
+            value: '',
+            type: 'input',
+            label: 'Укажите сумму пополнения'
+        }
+    },
     sim: {
         name: {
             value: '',

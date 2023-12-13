@@ -7,6 +7,8 @@ import Settings from '../views/Settings.vue'
 import SmsCollector from '../views/SmsCollector.vue'
 import CallCollector from '../views/CallCollector.vue'
 import Transactions from '../views/Transactions.vue'
+import TransactionsAll from '../views/TransactionsAll.vue'
+import TransactionsItem from '../views/TransactionsDetail.vue'
 import SuccessRegistration from '../views/SuccessRegistration.vue'
 import FailRegistration from '../views/FailRegistration.vue'
 // import TopUpBalance from '../views/TopUpBalance.vue'
@@ -16,6 +18,7 @@ import Support from '../views/Support.vue'
 import SupportDetail from '../views/SupportDetail.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import ApiDocumentation from '../views/ApiDocumentation'
+import Dashboard from '../views/Dashboard.vue'
 import store from '../store/index.js'
 
 
@@ -114,6 +117,28 @@ const routes = [
     component: Transactions
   },
   {
+    path: '/transactions/all',
+    name: 'TRANSACTIONS USER',
+    caption: 'Операции по балансу',
+    icon: 'price_check',
+    show: false,
+    meta: {
+      roles: ['admin'],
+    },
+    component: TransactionsAll
+  },
+  {
+    path: '/transactions/all/:id',
+    name: 'Транзакции пользователя',
+    caption: 'Операции по балансу',
+    icon: 'price_check',
+    show: false,
+    meta: {
+      roles: ['admin'],
+    },
+    component: TransactionsItem
+  },
+  {
     path: '/support',
     name: 'SUPPORT',
     caption: 'Техподдержка',
@@ -140,7 +165,7 @@ const routes = [
   //   name: 'TOP UP',
   //   caption: 'Пополнение баланса',
   //   icon: 'payments',
-  //   show: true,
+  //   show: false,
   //   meta: {
   //     roles: ['all'],
   //   },
@@ -222,6 +247,18 @@ const routes = [
       roles: ['all'],
     },
     component: ApiDocumentation
+  },
+  {
+    path: '/dashboard',
+    name: 'DASHBOARD',
+    caption: 'Настройки администратора',
+    icon: 'tune',
+    css: '',
+    show: true,
+    meta: {
+      roles: ['admin'],
+    },
+    component: Dashboard
   }
 ]
 
@@ -230,7 +267,7 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  if (to.meta.roles.includes('all') || to.meta.roles.includes(store.state.user.role) || !Object.keys(store.state.user).length) {
+  if (to.meta.roles.includes('all') || to.meta.roles.includes('admin') || to.meta.roles.includes(store.state.user.role) || !Object.keys(store.state.user).length) {
     next()
   } else {
     next({'path': '/'})

@@ -9,6 +9,14 @@
           :columns="columns"
           :rows-per-page-options="[25, 50, 100, 0]"
         )
+          template(v-slot:top-right)
+            q-btn.q-mr-sm(
+              size="sm"
+              color="secondary"
+              label="Транзакции пользователей"
+              href="/transactions/all"
+              to="/transactions/all"
+            )
           template(v-slot:body-cell="props")
             q-td(
               :props="props"

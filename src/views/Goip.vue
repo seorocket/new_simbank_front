@@ -22,7 +22,7 @@
                 template(v-if="props.row.phone_number")
                   | {{ props.row.operator }} / {{ props.row.phone_number }}
               q-td(key="signal" :props="props") {{ props.row.signal }}
-              q-td(key="sim_id" :props="props" v-html="props.row.sim_id ? props.row.sim_id : '-'")
+              q-td(key="sim_id" :props="props" v-html="props.row.line_id ? props.row.line_id : '-'")
               q-td(key="imei" :props="props") {{ props.row.imei }}
               q-td(key="action" :props="props")
                 q-btn(

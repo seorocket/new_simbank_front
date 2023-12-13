@@ -63,18 +63,18 @@
                   //    color="primary"
                   //    type="submit"
                   //    )
-                  div(
-                    style="margin: 15px 0 10px 0"
-                  )
-                    span Это новая версия simbank.pro
-                    br
-                    span чтобы переидти на старую нажмите на
-                    a(
-                      href="https://old.simbank.pro"
-                      style="color: var(--q-color-primary) !important; text-decoration: none; margin-left: 5px;"
-                    ) ссылку
-                    br
-                    span За новыми доступами обратитесь к администартору
+                  //div(
+                  //  style="margin: 15px 0 10px 0"
+                  //)
+                  //  span Это новая версия simbank.pro
+                  //  br
+                  //  span чтобы переидти на старую нажмите на
+                  //  a(
+                  //    href="https://old.simbank.pro"
+                  //    style="color: var(--q-color-primary) !important; text-decoration: none; margin-left: 5px;"
+                  //  ) ссылку
+                  //  br
+                  //  span За новыми доступами обратитесь к администартору
             q-tab-panel(name="registration")
               q-card-section(class="row items-center")
                 form(@submit.prevent="registration()" method="post" id="login" style="min-width: 400px")
@@ -149,7 +149,7 @@
             img(src="https://simbank.pro/static/media/logo.3a24e86a.svg" style="display: table; margin: 0 auto;")
           LeftMenuLink(
             v-for="item in leftMenu"
-            v-if="item.show && (item.meta.roles.includes(user.role) || item.meta.roles.includes('all'))"
+            v-if="item.show && (item.meta.roles.includes(user.role) || item.meta.roles.includes('all') || user.admin)"
             v-bind:icon="item.icon"
             v-bind:name="item.name"
             v-bind:link="item.path"
@@ -160,7 +160,7 @@
             q-item-section
               q-item-label Аккаунт
               q-item-label(caption) {{ user.username }}
-          q-item(v-if="user.role === 'owner'")
+          q-item(v-if="user.admin || user.role === 'owner'")
             q-item-section
               q-item-label Баланс
               q-item-label(caption) {{ user.balance }} руб.
@@ -204,6 +204,7 @@ export default {
   created () {
     console.log(process.env.VUE_APP_ROOT_API)
     axios.defaults.baseURL = process.env.VUE_APP_ROOT_API
+    // axios.defaults.baseURL = 'http://127.0.0.1:8001/api'
     if (this.token) {
       axios.defaults.headers.common.Authorization = `Token ${this.token}`
     }

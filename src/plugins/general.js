@@ -1,5 +1,6 @@
 import axios from "axios";
 import schemes from "./schemes"
+import {mapState} from "vuex";
 
 // String.prototype.format = function () {
 //   // store arguments in an array
@@ -73,6 +74,11 @@ const mixins = {
                     data: [],
                     name: 'Клиенты'
                 },
+                all_client: {
+                    url: '/clients/?employer=null&view_clients=all',
+                    data: [],
+                    name: 'Клиенты'
+                },
                 transaction: {
                     url: '/transactions/',
                     data: [],
@@ -141,6 +147,18 @@ const mixins = {
                     active: false,
                     update: false,
                     scheme: JSON.parse(JSON.stringify(schemes.smb_server))
+                },
+                transaction: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.client))
+                },
+                client: {
+                    submitting: false,
+                    active: false,
+                    update: false,
+                    scheme: JSON.parse(JSON.stringify(schemes.client))
                 },
                 sim: {
                     submitting: false,
@@ -212,9 +230,15 @@ const mixins = {
             }
         }
     },
+    computed: {
+        ...mapState([
+            'user'
+        ])
+    },
     methods: {
         createObject: function (data, type, update= false, message = '', filter_return = '') {
             const vm = this
+            console.log(update)
             vm.popup[type].submitting = true
             const method = update ? 'patch' : 'post'
             const url = update ? `${vm.model[type].url}${update}/` : vm.model[type].url
@@ -251,6 +275,46 @@ const mixins = {
                 }
             })
         },
+        createObjectTransaction: function (data, type, update= false, message = '') {
+            const vm = this
+            vm.popup[type].submitting = true
+            const url = vm.model[type].url
+            let new_data = {}
+            for (let key in data) {
+                if ( data[key].type === 'select' ) {
+                    new_data[key] = data[key].value.value
+                } else {
+                    new_data[key] = data[key].value
+                }
+            }
+            new_data['client'] = update
+            new_data['type'] = true
+            new_data['desc'] = 4
+            new_data['client_edit'] = this.user.id
+            console.log(new_data)
+            axios['post'](url, new_data).then(response => {
+                vm.popup[type].submitting = false
+                if ([200, 201].indexOf(response.code) > -1 ) {
+                    vm.getData('client', 'employer=null&view_clients=all')
+                    if (message) {
+                        vm.showNotify('top-right', message, 'positive')
+                    }
+                    vm.popup.active = vm.popup[type].active = false
+                    vm.popup[type].update = false
+                    vm.popup[type].scheme = JSON.parse(JSON.stringify(schemes[type]))
+                } else if ( response.code === 400) {
+                    let message = ''
+                    for ( let item in response.data) {
+                        if (vm.popup[type].scheme[item]){
+                            message += `${vm.popup[type].scheme[item].label}: ${response.data[item]} <br>`
+                        } else {
+                            message += `${response.data[item]} <br>`
+                        }
+                    }
+                    vm.showNotify('top-right', message, 'negative')
+                }
+            })
+        },
         deleteObject (id, type) {
           const vm = this
           axios.delete(`${vm.model[type].url}${id}/`).then(response => {
@@ -263,6 +327,21 @@ const mixins = {
                 }
             }
           })
+        },
+        cancelledTransactionObject(id, type, params, user) {
+            const vm = this;
+            const obj = vm.model[type].data.filter(item => item.id == id)[0]
+            const updateData = { cancelled: true, client_cancelled: user.id };
+
+            axios.patch(`${vm.model[type].url}${id}/?${params}`, updateData).then(response => {
+                if (response.code === 200) {
+                    vm.getData('transaction', `client=${vm.$route.params.id}&view_transactions=all`)
+                    vm.showNotify('top-right', `Транзакция на сумму ${obj.value}₽ отменена`, 'positive');
+                }
+            }).catch(error => {
+                vm.showNotify('top-right', `Ошибка при отмене транзакции`, 'negative');
+                console.error('Ошибка при отмене транзакции:', error);
+            });
         },
         showNotify(position, message, color, freeze = false) {
             this.$q.notify({
@@ -317,12 +396,18 @@ const mixins = {
         getData(type, params, id) {
             const vm = this
             let url
-            if (id) {
+            if (params && id) {
+                url = `${vm.model[type].url}${id}/?${params}`
+            } else if (id) {
                 url = `${vm.model[type].url}${id}/`
             } else {
                 url = params ? `${vm.model[type].url}?${params}` : vm.model[type].url
             }
-            if (id) {
+            if (params && id) {
+                axios.get(url).then(response => {
+                    vm.model[type].data = response.data
+                })
+            } else if (id) {
                 return axios.get(url).then(response => {
                     return response.data
                 })
@@ -337,6 +422,7 @@ const mixins = {
             if (detail) {
                 vm.popup[type].update = detail
                 for (let key in vm.popup[type].scheme) {
+                    console.log(vm.model[type].data)
                     let obj = vm.model[type].data.filter(item => item.id == detail)[0]
                     if (vm.popup[type].scheme[key].type === 'select') {
                         if (obj[key]) {
@@ -370,6 +456,24 @@ const mixins = {
           }).onOk(() => {
             vm.deleteObject(id, type)
           })
+        },
+        cancelledTransactionItem(id, type, params, user) {
+            const vm = this
+            let obj = vm.model[type].data.filter(item => item.id == id)[0]
+            vm.$q.dialog({
+                title: 'Подтвердите действие',
+                message: `Вы точно хотите отменить транзакцию на сумму ${obj.value}₽?`,
+                ok: {
+                    push: true
+                },
+                cancel: {
+                    push: true,
+                    color: 'negative'
+                },
+                persistent: true
+            }).onOk(() => {
+                vm.cancelledTransactionObject(id, type, params, user)
+            })
         },
     },
     watch: {

@@ -167,6 +167,7 @@ export default {
         persistent: true
       }).onOk(() => {
         axios.post('/sim/delete/', data).then(response => {
+          console.log(response)
           vm.showNotify('top-right', `Удалено ${response.data.deleted} Sim карт`, 'positive')
           vm.getData('sim')
         })
